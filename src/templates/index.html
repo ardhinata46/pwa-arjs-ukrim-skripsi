@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#0059b3"/>
+    <meta name="description" content="Augmented Reality UKRIM">
+
+    <link rel="apple-touch-icon" href="./icons/icon-192x192.png">
+    <link rel="icon" href="./UKRIM.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="manifest" href="./app.webmanifest.json">
+    <script src="https://use.fontawesome.com/b070c8f1df.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>AR UKRIM</title>
+    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+<!--        <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>-->
+    <script src="https://raw.githack.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+<!--    <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>-->
+    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+
+    <!-- slice9: Create panels and backgrounds. -->
+    <script src="https://unpkg.com/aframe-slice9-component@1.0.0/dist/aframe-slice9-component.min.js"></script>
+    <!-- layout: Arrange and position entities automatically. -->
+    <script src="https://unpkg.com/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
+    <!-- environment: Pretty stage presets. -->
+    <!--    <script src="https://unpkg.com/aframe-environment-component@2.0.0/dist/aframe-environment-component.min.js"></script>-->
+    <!-- proxy-event: Declaratively capture and event and reroute it to another entity. -->
+    <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
+    <!-- render-order: Control rendering order for transparent objects. -->
+    <script src="https://unpkg.com/aframe-render-order-component@1.0.0/dist/aframe-render-order-component.min.js"></script>
+    <!-- state: Manage application state and bind it to parts of the application to automatically react to state changes. -->
+    <script src="https://unpkg.com/aframe-state-component@6.6.0/dist/aframe-state-component.min.js"></script>
+
+    <script src="https://unpkg.com/aframe-controller-cursor-component@0.2.x/dist/aframe-controller-cursor-component.min.js"></script>
+
+</head>
+
+<style>
+    #message {
+        position: fixed;
+        z-index: 10;
+        left: 5%;
+        bottom: 30px;
+        width: 90%;
+        padding: 2%;
+        color: #fff;
+        font-weight: bold;
+        background-color: rgba(0, 0, 0, .8);
+        border-radius: 20px;
+        border: 3px solid #fff;
+        display: none;
+    }
+</style>
+<body style="margin : 0px; overflow: hidden;">
+<div id="message"></div>
+
+<a-scene id="scene" test-comp vr-mode-ui='enabled: false'
+         embedded
+         arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false;'
+         renderer='antialias: true; alpha: true'>
+
+<!--    <a-camera-->
+<!--            gps-camera="gpsMinDistance:10;"-->
+<!--            rotation-reader></a-camera>-->
+    <a-camera
+            gps-camera="simulateLatitude:-7.775324654571177; simulateLongitude: 110.45077449648089; gpsMinDistance: 10"
+            rotation-reader></a-camera>
+    <a-assets>
+        <!-- Images. -->
+        <img id="backIconImg" src="./exit.png">
+        <img id="pageIconImg" src="./next-button.png">
+        <img id="sliceImg" src="https://cdn.glitch.com/0ddef241-2c1a-4bc2-8d47-58192c718908%2Fslice.png?1557308835598"
+             crossorigin>
+
+        <!-- Base mixins. -->
+        <a-mixin id="font" text="font: roboto"></a-mixin>
+        <a-mixin id="slice"
+                 slice9="color: #050505; transparent: true; opacity: 0.9; src: #sliceImg; left: 50; right: 52; top: 50; bottom: 52; padding: 0.15"></a-mixin>
+
+        <!-- Menu and button mixins. Mixins can be composed from other mixins. -->
+        <a-mixin id="buttonBackground" mixin="slice" slice9="width: 2; height: 0.4; color: #854c03" position="0 0 1"
+                 render-order="button"></a-mixin>
+        <a-mixin
+                id="buttonHoverEffect"
+                animation__mouseenter="property: components.slice9.material.color; type: color; from: #854c03; to: #333; easing: easeOutCubic; dur: 150; startEvents: mouseenter"
+                animation__mouseleave="property: components.slice9.material.color; type: color; from: #333; to: #854c03; easing: easeOutCubic; dur: 150; startEvents: mouseleave"></a-mixin>
+        <a-mixin id="buttonText" mixin="font" text="align: center; width: 1.5; zOffset: 0.01; color: #FAFAFA"></a-mixin>
+        <a-mixin id="button" mixin="buttonBackground buttonHoverEffect buttonText" render-order="button"
+                 proxy-event="event: click; to: a-scene; captureBubbles: true"></a-mixin>
+        <a-mixin id="pageButton" geometry="primitive: plane; width: 0.25; height: 0.25"
+                 material="src: #pageIconImg; shader: flat; transparent: true"
+                 animation__mouseenter="property: components.material.material.color; type: color; from: #FFF; to: #AAF; dur: 100; startEvents: mouseenter"
+                 animation__mouseleave="property: components.material.material.color; type: color; from: #AAF; to: #FFF; dur: 100; startEvents: mouseleave"></a-mixin>
+
+        <a-mixin id="pageButtonBack" geometry="primitive: plane; width: 0.3; height: 0.3"
+                 material="src: #backIconImg; shader: flat; transparent: true"
+                 animation__mouseenter="property: components.material.material.color; type: color; from: #FFF; to: #AAF; dur: 100; startEvents: mouseenter"
+                 animation__mouseleave="property: components.material.material.color; type: color; from: #AAF; to: #FFF; dur: 100; startEvents: mouseleave"></a-mixin>
+
+    </a-assets>
+
+    <!--UNIT I A (KAPEL)-->
+    <a-entity emitevents="true" cursor="rayOrigin: mouse" id="entity-handler">
+        <a-image id="image-pin"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground">
+                <a-entity id="infoData" layout="type: box; columns: 1; marginRow: -0.7" position="0 0.1 1">
+                    <a-entity id="text-location"></a-entity>
+                    <a-entity id="text-distance"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+        <a-image id="more-info"></a-image>
+
+    </a-entity>
+    <!--UNIT I B (PERPUSTAKAAN UKRIM)-->
+    <a-entity emitevents="true" cursor="rayOrigin: mouse" id="entity-handler2">
+        <a-image id="image-pin2"></a-image>
+        <a-entity id="info2" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground2" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground2">
+                <a-entity id="infoData2" layout="type: box; columns: 1; marginRow: -0.7" position="0 0.1 1">
+                    <a-entity id="text-location2"></a-entity>
+                    <a-entity id="text-distance2"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+        <a-image id="more-info2"></a-image>
+    </a-entity>
+    <!--UNIT II A (TEKNIK SIPIL)-->
+    <a-entity emitevents="true" cursor="rayOrigin: mouse" id="entity-handler3">
+        <a-image id="image-pin3"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground3" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground3"></a-entity>
+            <a-entity id="infoData3" layout="type: box; columns: 1; marginRow: -0.7" position="0 0.1 1">
+                <a-entity id="text-location3"></a-entity>
+                <a-entity id="text-distance3"></a-entity>
+            </a-entity>
+        </a-entity>
+        <a-image id="more-info3"></a-image>
+    </a-entity>
+    <!--UNIT II B (ASRAMA UKRIM)-->
+    <a-entity emitevents="true" cursor="rayOrigin: mouse" id="entity-handler4">
+        <a-image id="image-pin4"></a-image>
+        <a-entity id="info4" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground4" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground4">
+                <a-entity id="infoData4" layout="type: box; columns: 1; marginRow: -0.7" position="0 0.1 1">
+                    <a-entity id="text-location4"></a-entity>
+                    <a-entity id="text-distance4"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+        <a-image id="more-info4"></a-image>
+    </a-entity>
+    <!--UNIT III-->
+    <a-entity emitevents="true" cursor="rayOrigin: mouse" id="entity-handler5">
+        <a-image id="image-pin5"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground5" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground5"></a-entity>
+            <a-entity id="infoData5" layout="type: box; columns: 1; marginRow: -0.7" position="0 0.1 1">
+                <a-entity id="text-location5"></a-entity>
+                <a-entity id="text-distance5"></a-entity>
+            </a-entity>
+        </a-entity>
+        <a-image id="more-info5"></a-image>
+    </a-entity>
+    <!--UNIT III C-->
+    <a-entity emitevents="true" cursor="rayOrigin: mouse" id="entity-handler6">
+        <a-image id="image-pin6"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground6" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground6"></a-entity>
+            <a-entity id="infoData6" layout="type: box; columns: 1; marginRow: -0.7" position="0 0.1 1">
+                <a-entity id="text-location6"></a-entity>
+                <a-entity id="text-distance6"></a-entity>
+            </a-entity>
+        </a-entity>
+        <a-image id="more-info6"></a-image>
+    </a-entity>
+    <!--FISKOM (UNIT IV)-->
+    <a-entity emitevents="true" cursor="rayOrigin: mouse" id="entity-handler7">
+        <a-image id="image-pin7"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground7" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground7"></a-entity>
+            <a-entity id="infoData7" layout="type: box; columns: 1; marginRow: -0.7" position="0 0.1 1">
+                <a-entity id="text-location7"></a-entity>
+                <a-entity id="text-distance7"></a-entity>
+            </a-entity>
+        </a-entity>
+        <a-image id="more-info7"></a-image>
+    </a-entity>
+    <!--AMG (UNIT V)-->
+    <a-entity emitevents="true" cursor="rayOrigin: mouse" id="entity-handler8">
+        <a-image id="image-pin8"></a-image>
+        <a-entity id="info8" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground8" mixin="slice" slice9="height: 1; width: 5; color: #171717"
+                      render-order="menuBackground">
+                <a-entity id="infoData8" layout="type: box; columns: 1; marginRow: -0.7" position="0 0.1 1">
+                    <a-entity id="text-location8"></a-entity>
+                    <a-entity id="text-distance8"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+        <a-image id="more-info8"></a-image>
+    </a-entity>
+    <!--Ruang Praktek Musik (UNIT V)-->
+    <a-entity emitevents="true" cursor="rayOrigin: mouse" id="entity-handler9">
+        <a-image id="image-pin9"></a-image>
+        <a-entity id="info9" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground9" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground">
+                <a-entity id="infoData9" layout="type: box; columns: 1; marginRow: -0.7" position="0 0.1 1">
+                    <a-entity id="text-location9"></a-entity>
+                    <a-entity id="text-distance9"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+        <a-image id="more-info9"></a-image>
+    </a-entity>
+    <!--Immanuel MUsic Center (UNIT V)-->
+    <a-entity emitevents="true" cursor="rayOrigin: mouse" id="entity-handler10">
+        <a-image id="image-pin10"></a-image>
+        <a-entity id="info10" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground10" mixin="slice" slice9="height: 1; width: 4.5; color: #171717"
+                      render-order="menuBackground">
+                <a-entity id="infoData10" layout="type: box; columns: 1; marginRow: -0.7" position="0 0.1 1">
+                    <a-entity id="text-location10"></a-entity>
+                    <a-entity id="text-distance10"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+        <a-image id="more-info10"></a-image>
+    </a-entity>
+    <!-- Lab. Komputer 3, PMI,LPPM dan OCI (UNIT VI)-->
+    <a-entity emitevents="true" cursor="rayOrigin: mouse" id="entity-handler11">
+        <a-image id="image-pin11"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground11" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground"></a-entity>
+            <a-entity id="infoData11" layout="type: box; columns: 1; marginRow: -0.7" position="0 0.1 1">
+                <a-entity id="text-location11"></a-entity>
+                <a-entity id="text-distance11"></a-entity>
+            </a-entity>
+        </a-entity>
+        <a-image id="more-info11"></a-image>
+    </a-entity>
+    <!--Lab. Energi terbarukan (UNIT VII B)-->
+    <a-entity emitevents="true" cursor="rayOrigin: mouse" id="entity-handler12">
+        <a-image id="image-pin12"></a-image>
+        <a-entity id="info12" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground12" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground">
+                <a-entity id="infoData12" layout="type: box; columns: 1; marginRow: -0.7" position="0 0.1 1">
+                    <a-entity id="text-location12"></a-entity>
+                    <a-entity id="text-distance12"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+        <a-image id="more-info12"></a-image>
+    </a-entity>
+    <!-- UNIT VII A-->
+    <a-entity emitevents="true" cursor="rayOrigin: mouse" id="entity-handler13">
+        <a-image id="image-pin13"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground13" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground"></a-entity>
+            <a-entity id="infoData13" layout="type: box; columns: 1; marginRow: -0.7" position="0 0.1 1">
+                <a-entity id="text-location13"></a-entity>
+                <a-entity id="text-distance13"></a-entity>
+            </a-entity>
+        </a-entity>
+        <a-image id="more-info13"></a-image>
+    </a-entity>
+    <!--Saria Marantika (UNIT VIII)-->
+    <a-entity emitevents="true" cursor="rayOrigin: mouse" id="entity-handler14">
+        <a-image id="image-pin14"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground14" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground"></a-entity>
+            <a-entity id="infoData14" layout="type: box; columns: 1; marginRow: -0.7" position="0 0.1 1">
+                <a-entity id="text-location14"></a-entity>
+                <a-entity id="text-distance14"></a-entity>
+            </a-entity>
+        </a-entity>
+        <a-image id="more-info14"></a-image>
+    </a-entity>
+    <!-- UNIT VIII D-->
+    <a-entity emitevents="true" cursor="rayOrigin: mouse" id="entity-handler15">
+        <a-image id="image-pin15"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground15" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground"></a-entity>
+            <a-entity id="infoData15" layout="type: box; columns: 1; marginRow: -0.7" position="0 0.1 1">
+                <a-entity id="text-location15"></a-entity>
+                <a-entity id="text-distance15"></a-entity>
+            </a-entity>
+        </a-entity>
+        <a-image id="more-info15"></a-image>
+    </a-entity>
+
+    <a-entity camera></a-entity>
+</a-scene>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" data-toggle="modal" aria-labelledby="exampleModalLongTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body1">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body2">
+            </div>
+            <div class="modal-footer">
+                <button id="btn-close" type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" href="#exampleModalLong">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>

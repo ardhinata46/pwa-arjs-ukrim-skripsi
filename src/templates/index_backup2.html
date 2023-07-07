@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#0059b3"/>
+    <meta name="description" content="Augmented Reality UKRIM">
+
+    <link rel="apple-touch-icon" href="./icons/icon-192x192.png">
+    <link rel="icon" href="./UKRIM.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="manifest" href="./app.webmanifest.json">
+    <script src="https://use.fontawesome.com/b070c8f1df.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>AR UKRIM</title>
+    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+<!--            <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>-->
+    <script src="https://raw.githack.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+<!--    <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>-->
+    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+
+    <!-- slice9: Create panels and backgrounds. -->
+    <script src="https://unpkg.com/aframe-slice9-component@1.0.0/dist/aframe-slice9-component.min.js"></script>
+    <!-- layout: Arrange and position entities automatically. -->
+    <script src="https://unpkg.com/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
+    <!-- environment: Pretty stage presets. -->
+    <!--    <script src="https://unpkg.com/aframe-environment-component@2.0.0/dist/aframe-environment-component.min.js"></script>-->
+    <!-- proxy-event: Declaratively capture and event and reroute it to another entity. -->
+    <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
+    <!-- render-order: Control rendering order for transparent objects. -->
+    <script src="https://unpkg.com/aframe-render-order-component@1.0.0/dist/aframe-render-order-component.min.js"></script>
+    <!-- state: Manage application state and bind it to parts of the application to automatically react to state changes. -->
+    <script src="https://unpkg.com/aframe-state-component@6.6.0/dist/aframe-state-component.min.js"></script>
+
+    <script src="https://unpkg.com/aframe-controller-cursor-component@0.2.x/dist/aframe-controller-cursor-component.min.js"></script>
+
+
+    <script src="./information/state.js"></script>
+
+
+    <script>AFRAME.registerComponent('raycastable', {});</script>
+</head>
+
+
+<body style="margin : 0px; overflow: hidden;">
+<a-scene id="scene" test-comp vr-mode-ui='enabled: false' render-order="menuBackground, menuItem, button"
+
+         embedded
+         arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false;'
+         renderer='antialias: true; alpha: true'>
+
+    <a-camera gps-camera="simulateLatitude: -7.775317260802348; simulateLongitude: 110.45077526196184; gpsMinDistance:10;"
+              rotation-reader></a-camera>
+    <a-assets>
+        <!-- Images. -->
+        <img id="backIconImg" src="./exit.png">
+        <img id="pageIconImg" src="./next-button.png">
+        <img id="sliceImg" src="https://cdn.glitch.com/0ddef241-2c1a-4bc2-8d47-58192c718908%2Fslice.png?1557308835598"
+             crossorigin>
+
+        <!-- Base mixins. -->
+        <a-mixin id="font" text="font: roboto"></a-mixin>
+        <a-mixin id="slice"
+                 slice9="color: #050505; transparent: true; opacity: 0.9; src: #sliceImg; left: 50; right: 52; top: 50; bottom: 52; padding: 0.15"></a-mixin>
+
+        <!-- Menu and button mixins. Mixins can be composed from other mixins. -->
+        <a-mixin id="buttonBackground" mixin="slice" slice9="width: 2; height: 0.4; color: #854c03" position="0 0 1"
+                 render-order="button"></a-mixin>
+        <a-mixin
+                id="buttonHoverEffect"
+                animation__mouseenter="property: components.slice9.material.color; type: color; from: #854c03; to: #333; easing: easeOutCubic; dur: 150; startEvents: mouseenter"
+                animation__mouseleave="property: components.slice9.material.color; type: color; from: #333; to: #854c03; easing: easeOutCubic; dur: 150; startEvents: mouseleave"></a-mixin>
+        <a-mixin id="buttonText" mixin="font" text="align: center; width: 1.5; zOffset: 0.01; color: #FAFAFA"></a-mixin>
+        <a-mixin id="button" mixin="buttonBackground buttonHoverEffect buttonText" render-order="button"
+                 proxy-event="event: click; to: a-scene; captureBubbles: true"></a-mixin>
+        <a-mixin id="pageButton" geometry="primitive: plane; width: 0.25; height: 0.25"
+                 material="src: #pageIconImg; shader: flat; transparent: true"
+                 animation__mouseenter="property: components.material.material.color; type: color; from: #FFF; to: #AAF; dur: 100; startEvents: mouseenter"
+                 animation__mouseleave="property: components.material.material.color; type: color; from: #AAF; to: #FFF; dur: 100; startEvents: mouseleave"></a-mixin>
+
+        <a-mixin id="pageButtonBack" geometry="primitive: plane; width: 0.3; height: 0.3"
+                 material="src: #backIconImg; shader: flat; transparent: true"
+                 animation__mouseenter="property: components.material.material.color; type: color; from: #FFF; to: #AAF; dur: 100; startEvents: mouseenter"
+                 animation__mouseleave="property: components.material.material.color; type: color; from: #AAF; to: #FFF; dur: 100; startEvents: mouseleave"></a-mixin>
+
+    </a-assets>
+
+    <!--UNIT I A (KAPEL)-->
+    <a-entity visible=true id="entity-handler">
+        <a-image id="image-pin"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground">
+                <a-entity id="infoData" layout="type: box; columns: 1; marginRow: -0.7" position="0 -0.1 1">
+                    <a-entity id="text-location"></a-entity>
+                    <a-entity id="text-distance"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Menu container. -->
+        <a-entity id="menu" look-at="[gps-camera]" position="0 -1.5 0" visible=true>
+            <a-entity id="menuBackground" mixin="slice" slice9="height: 4.5; width: 4; color: #171717"
+                      render-order="menuBackground">
+            </a-entity>
+
+            <a-entity id="infoImage">
+                <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                         material="shader: flat; transparent: true" position="0 0.65 1"
+                         src="./img_ruangan.jpg">
+                </a-image>
+            </a-entity>
+
+            <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                <a-entity id="descUnit" mixin="font" text="align: center; width: 3"></a-entity>
+            </a-entity>
+        </a-entity>
+    </a-entity>
+    <!--UNIT I B (PERPUSTAKAAN UKRIM)-->
+    <a-entity visible=true id="entity-handler2">
+        <a-image id="image-pin2"></a-image>
+        <a-entity id="info2" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground2" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground2">
+                <a-entity id="infoData2" layout="type: box; columns: 1; marginRow: -0.7" position="0 -0.1 1">
+                    <a-entity id="text-location2"></a-entity>
+                    <a-entity id="text-distance2"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Menu container. -->
+        <a-entity id="menu2" look-at="[gps-camera]" position="0 -1.5 0" visible=true>
+            <a-entity id="menuBackground2" mixin="slice" slice9="height: 4.5; width: 4; color: #171717"
+                      render-order="menuBackground2">
+            </a-entity>
+
+            <a-entity id="infoImage2">
+                <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                         material="shader: flat; transparent: true" position="0 0.65 1"
+                         src="./img_ruangan.jpg">
+                </a-image>
+            </a-entity>
+
+            <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                <a-entity id="descUnit2" mixin="font" text="align: center; width: 3"></a-entity>
+            </a-entity>
+        </a-entity>
+    </a-entity>
+    <!--UNIT II A (TEKNIK SIPIL)-->
+    <a-entity visible=true id="entity-handler3">
+        <a-image id="image-pin3"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground3" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground3"></a-entity>
+            <a-entity id="infoData3" layout="type: box; columns: 1; marginRow: -0.7" position="0 -0.1 1">
+                <a-entity id="text-location3"></a-entity>
+                <a-entity id="text-distance3"></a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Menu container. -->
+        <a-entity id="menu3" look-at="[gps-camera]" position="0 -1.5 0" visible=false>
+            <a-entity id="menuBackground3" mixin="slice" slice9="height: 4.5; width: 4; color: #171717"
+                      render-order="menuBackground"></a-entity>
+            <a-entity id="menuBack3" mixin="pageButtonBack" scale="1.5 1.5 1.5" position="1.5 1.8 1" rotation="0 0 0"
+                      proxy-event="event: click; to: a-scene; as: menuBack_ts"
+                      bind-toggle__raycastable="menu_ts !== 'main_ts'"
+                      bind__visible="menu_ts !== 'main_ts'" render-order="menuItem"></a-entity>
+
+            <!-- Main menu. -->
+            <a-mixin id="buttonMain3" mixin="button" bind-toggle__raycastable="menu_ts === 'main_ts'"></a-mixin>
+            <a-entity id="mainMenu3" bind__visible="menu_ts === 'main_ts'">
+                <a-entity id="title3" text="value: DAFTAR RUANGAN; color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1" render-order="menuItem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.55" position="0 0.8 1">
+                    <a-entity mixin="buttonMain3" proxy-event="as: menuRuangan_ts1">
+                        <a-text id="btnMenuTs1" mixin="buttonText" value="" width="4" position="0 -0.05 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain3" proxy-event="as: menuRuangan_ts2">
+                        <a-text id="btnMenuTs2" mixin="buttonText" value="" width="4" position="0 0 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain3" proxy-event="as: menuRuangan_ts3">
+                        <a-text id="btnMenuTs3" mixin="buttonText" value="" width="4" position="0 0.02 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain3" proxy-event="as: menuRuangan_ts4">
+                        <a-text id="btnMenuTs4" mixin="buttonText" value="" width="4" position="0 0.05 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain3" proxy-event="as: menuRuangan_ts5">
+                        <a-text id="btnMenuTs5" mixin="buttonText" value="" width="4" position="0 0.07 1"></a-text>
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- Menu Kantor TS -->
+            <a-mixin id="buttonRoomTs1" mixin="button" bind-toggle__raycastable="menu_ts === 'ruangan_ts1'"></a-mixin>
+            <a-entity id="RoomMenuTs" bind__visible="menu_ts === 'ruangan_ts1'">
+
+                <a-entity id="titleRoomTs1" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoomTs1" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- Menu Kelas TS 1-->
+            <a-mixin id="buttonRoomTs2" mixin="button" bind-toggle__raycastable="menu_ts === 'ruangan_ts2'"></a-mixin>
+            <a-entity id="RoomMenuTs2" bind__visible="menu_ts === 'ruangan_ts2'">
+
+                <a-entity id="titleRoomTs2" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoomTs2" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!--Menu Kelas TS 2-->
+            <a-mixin id="buttonRoomTs3" mixin="button" bind-toggle__raycastable="menu_ts === 'ruangan_ts3'"></a-mixin>
+            <a-entity id="RoomMenuTs3" bind__visible="menu_ts === 'ruangan_ts3'">
+
+                <a-entity id="titleRoomTs3" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage3">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoomTs3" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!--Menu Kelas TS 3-->
+            <a-mixin id="buttonRoomTs4" mixin="button" bind-toggle__raycastable="menu_ts === 'ruangan_ts4'"></a-mixin>
+            <a-entity id="RoomMenuTs4" bind__visible="menu_ts === 'ruangan_ts4'">
+
+                <a-entity id="titleRoomTs4" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoomTs4" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!--Menu Kelas TS 4-->
+            <a-mixin id="buttonRoomTs5" mixin="button" bind-toggle__raycastable="menu_ts === 'ruangan_ts5'"></a-mixin>
+            <a-entity id="RoomMenuTs" bind__visible="menu_ts === 'ruangan_ts5'">
+
+                <a-entity id="titleRoomTs5" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoomTs5" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+    </a-entity>
+    <!--UNIT II B (ASRAMA UKRIM)-->
+    <a-entity visible=true id="entity-handler4">
+        <a-image id="image-pin4"></a-image>
+        <a-entity id="info4" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground4" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground4">
+                <a-entity id="infoData4" layout="type: box; columns: 1; marginRow: -0.7" position="0 -0.1 1">
+                    <a-entity id="text-location4"></a-entity>
+                    <a-entity id="text-distance4"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Menu container. -->
+        <a-entity id="menu4" look-at="[gps-camera]" position="0 -1.5 0" visible=true>
+            <a-entity id="menuBackground4" mixin="slice" slice9="height: 4.5; width: 4; color: #171717"
+                      render-order="menuBackground4">
+            </a-entity>
+
+            <a-entity id="infoImage4">
+                <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                         material="shader: flat; transparent: true" position="0 0.65 1"
+                         src="./img_ruangan.jpg">
+                </a-image>
+            </a-entity>
+
+            <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                <a-entity id="descUnit4" mixin="font" text="align: center; width: 3"></a-entity>
+            </a-entity>
+        </a-entity>
+    </a-entity>
+    <!--UNIT III-->
+    <a-entity visible=true id="entity-handler5">
+        <a-image id="image-pin5"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 2 0" visible=true>
+            <a-entity id="infoBackground5" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground5"></a-entity>
+            <a-entity id="infoData5" layout="type: box; columns: 1; marginRow: -0.7" position="0 -0.1 1">
+                <a-entity id="text-location5"></a-entity>
+                <a-entity id="text-distance5"></a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Menu container. -->
+        <a-entity id="menu5" look-at="[gps-camera]" position="0 -1.5 0" visible=false>
+            <a-entity id="menuBackground5" mixin="slice" slice9="height: 5.8; width: 4; color: #171717"
+                      render-order="menuBackground"></a-entity>
+            <a-entity id="menuBack5" mixin="pageButtonBack" scale="1.5 1.5 1.5" position="1.5 2.3 1" rotation="0 0 0"
+                      proxy-event="event: click; to: a-scene; as: menuBack_unit3a"
+                      bind-toggle__raycastable="menu_unit3 !== 'main_unit3a'"
+                      bind__visible="menu_unit3 !== 'main_unit3a'" render-order="menuItem"></a-entity>
+
+            <!-- Main menu. -->
+            <a-mixin id="buttonMain5" mixin="button" bind-toggle__raycastable="menu_unit3 === 'main_unit3a'"></a-mixin>
+            <a-entity id="mainMenu5" bind__visible="menu_unit3 === 'main_unit3a'">
+                <a-entity id="title5" text="value: MENU LANTAI; color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1" render-order="menuItem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.55" position="0 0.8 1">
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuLantai1_unit3a">
+                        <a-text id="btnMenulantai1_unit3" mixin="buttonText" value="" width="4"
+                                position="0 -0.05 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuLantai2_unit3b">
+                        <a-text id="btnMenulantai2_unit3" mixin="buttonText" value="" width="4"
+                                position="0 0 1"></a-text>
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!--Lantai I (UNIT III A)-->
+            <a-mixin id="buttonUnit3a" mixin="button"
+                     bind-toggle__raycastable="menu_unit3 === 'menuLantai1_unit3a'"></a-mixin>
+            <a-entity id="unitMenu3a" bind__visible="menu_unit3 === 'menuLantai1_unit3a'">
+
+                <a-entity id="title5" text="value: MENU RUANGAN; color: #FAFAFA; width: 5; align: center"
+                          position="0 2 1" render-order="menuItem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.55" position="0 1.3 1">
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuRoom1_unit3a">
+                        <a-text id="btnRoom1Unit3a" mixin="buttonText" value="" width="3.5"
+                                position="0 -0.1 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuRoom2_unit3a">
+                        <a-text id="btnRoom2Unit3a" mixin="buttonText" value="" width="3.5"
+                                position="0 -0.07 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuRoom3_unit3a">
+                        <a-text id="btnRoom3Unit3a" mixin="buttonText" value="" width="3.5" position="0 0 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuRoom4_unit3a">
+                        <a-text id="btnRoom4Unit3a" mixin="buttonText" value="" width="3.5"
+                                position="0 0.03 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuRoom5_unit3a">
+                        <a-text id="btnRoom5Unit3a" mixin="buttonText" value="" width="3.5"
+                                position="0 0.07 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuRoom6_unit3a">
+                        <a-text id="btnRoom6Unit3a" mixin="buttonText" value="" width="3.5"
+                                position="0 0.12 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuRoom7_unit3a">
+                        <a-text id="btnRoom7Unit3a" mixin="buttonText" value="" width="3.5" position="0 0.2 1"></a-text>
+                    </a-entity>
+
+                </a-entity>
+            </a-entity>
+
+            <a-entity>
+                <!--KANTOR FISKOM-->
+                <a-mixin id="btnRoom1_unit3a" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom1_unit3a'"></a-mixin>
+                <a-entity id="Room1_unit3a" bind__visible="menu_unit3 === 'menuRoom1_unit3a'">
+
+                    <a-entity id="titleRoom1_unit3a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom1_unit3a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--KANTOR FEBI-->
+                <a-mixin id="btnRoom2_unit3a" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom2_unit3a'"></a-mixin>
+                <a-entity id="Room2_unit3a" bind__visible="menu_unit3 === 'menuRoom2_unit3a'">
+
+                    <a-entity id="titleRoom2_unit3a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom2_unit3a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--LAB CO-->
+                <a-mixin id="btnRoom3_unit3a" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom3_unit3a'"></a-mixin>
+                <a-entity id="Room3_unit3a" bind__visible="menu_unit3 === 'menuRoom3_unit3a'">
+
+                    <a-entity id="titleRoom3_unit3a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom3_unit3a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--BURSA EFEK-->
+                <a-mixin id="btnRoom4_unit3a" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom4_unit3a'"></a-mixin>
+                <a-entity id="Room4_unit3a" bind__visible="menu_unit3 === 'menuRoom4_unit3a'">
+
+                    <a-entity id="titleRoom4_unit3a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom4_unit3a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--Ruangan III/A/6-->
+                <a-mixin id="btnRoom5_unit3a" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom5_unit3a'"></a-mixin>
+                <a-entity id="Room5_unit3a" bind__visible="menu_unit3 === 'menuRoom5_unit3a'">
+
+                    <a-entity id="titleRoom5_unit3a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom5_unit3a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--Ruangan III/A/7-->
+                <a-mixin id="btnRoom6_unit3a" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom6_unit3a'"></a-mixin>
+                <a-entity id="Room6_unit3a" bind__visible="menu_unit3 === 'menuRoom6_unit3a'">
+
+                    <a-entity id="titleRoom6_unit3a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom6_unit3a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--Ruangan LAB AKUNTANSI-->
+                <a-mixin id="btnRoom7_unit3a" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom7_unit3a'"></a-mixin>
+                <a-entity id="Room7_unit3a" bind__visible="menu_unit3 === 'menuRoom7_unit3a'">
+
+                    <a-entity id="titleRoom7_unit3a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom7_unit3a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!--Lantai II (UNIT III B)-->
+            <a-mixin id="buttonUnit3b" mixin="button"
+                     bind-toggle__raycastable="menu_unit3 === 'menuLantai2_unit3b'"></a-mixin>
+            <a-entity id="unitMenu3b" bind__visible="menu_unit3 === 'menuLantai2_unit3b'">
+
+                <a-entity id="title5" text="value: MENU RUANGAN; color: #FAFAFA; width: 5; align: center"
+                          position="0 2 1" render-order="menuItem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.55" position="0 1.3 1">
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuRoom1_unit3b">
+                        <a-text id="btnRoom1Unit3b" mixin="buttonText" value="" width="3.5"
+                                position="0 -0.1 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuRoom2_unit3b">
+                        <a-text id="btnRoom2Unit3b" mixin="buttonText" value="" width="3.5"
+                                position="0 -0.07 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuRoom3_unit3b">
+                        <a-text id="btnRoom3Unit3b" mixin="buttonText" value="" width="3.5" position="0 0 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuRoom4_unit3b">
+                        <a-text id="btnRoom4Unit3b" mixin="buttonText" value="" width="3.5"
+                                position="0 0.03 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuRoom5_unit3b">
+                        <a-text id="btnRoom5Unit3b" mixin="buttonText" value="" width="3.5"
+                                position="0 0.07 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuRoom6_unit3b">
+                        <a-text id="btnRoom6Unit3b" mixin="buttonText" value="" width="3.5"
+                                position="0 0.12 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain5" proxy-event="as: menuRoom7_unit3b">
+                        <a-text id="btnRoom7Unit3b" mixin="buttonText" value="" width="3.5" position="0 0.2 1"></a-text>
+                    </a-entity>
+
+                </a-entity>
+            </a-entity>
+            <a-entity>
+                <!--KANTOR REKTORAT-->
+                <a-mixin id="btnRoom1_unit3b" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom1_unit3b'"></a-mixin>
+                <a-entity id="Room1_unit3b" bind__visible="menu_unit3 === 'menuRoom1_unit3b'">
+
+                    <a-entity id="titleRoom1_unit3b" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom1_unit3b" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--ADAK/ADUM-->
+                <a-mixin id="btnRoom2_unit3b" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom2_unit3b'"></a-mixin>
+                <a-entity id="Room2_unit3b" bind__visible="menu_unit3 === 'menuRoom2_unit3b'">
+
+                    <a-entity id="titleRoom2_unit3b" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom2_unit3b" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--RUANGAN DOSEN-->
+                <a-mixin id="btnRoom3_unit3b" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom3_unit3b'"></a-mixin>
+                <a-entity id="Room3_unit3b" bind__visible="menu_unit3 === 'menuRoom3_unit3b'">
+
+                    <a-entity id="titleRoom3_unit3b" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom3_unit3b" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--LAB PUSKOM AB-->
+                <a-mixin id="btnRoom4_unit3b" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom4_unit3b'"></a-mixin>
+                <a-entity id="Room4_unit3b" bind__visible="menu_unit3 === 'menuRoom4_unit3b'">
+
+                    <a-entity id="titleRoom4_unit3b" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom4_unit3b" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--RLAB PUSKOM CD-->
+                <a-mixin id="btnRoom5_unit3b" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom5_unit3b'"></a-mixin>
+                <a-entity id="Room5_unit3b" bind__visible="menu_unit3 === 'menuRoom5_unit3b'">
+
+                    <a-entity id="titleRoom5_unit3b" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom5_unit3b" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--Ruangan BIMBINGAN-->
+                <a-mixin id="btnRoom6_unit3b" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom6_unit3b'"></a-mixin>
+                <a-entity id="Room6_unit3b" bind__visible="menu_unit3 === 'menuRoom6_unit3b'">
+
+                    <a-entity id="titleRoom6_unit3b" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom6_unit3b" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--Ruangan III/B/7 - FEBI-->
+                <a-mixin id="btnRoom7_unit3b" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom7_unit3b'"></a-mixin>
+                <a-entity id="Room7_unit3b" bind__visible="menu_unit3 === 'menuRoom7_unit3b'">
+
+                    <a-entity id="titleRoom7_unit3b" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom7_unit3b" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+    </a-entity>
+    <!--UNIT III C-->
+    <a-entity visible=true  id="entity-handler6">
+        <a-image id="image-pin6"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground6" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground6"></a-entity>
+            <a-entity id="infoData6" layout="type: box; columns: 1; marginRow: -0.7" position="0 -0.1 1">
+                <a-entity id="text-location6"></a-entity>
+                <a-entity id="text-distance6"></a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Menu container. -->
+        <a-entity id="menu6" look-at="[gps-camera]" position="0 -1.5 0" visible=false>
+            <a-entity id="menuBackground6" mixin="slice" slice9="height: 4.5; width: 4; color: #171717"
+                      render-order="menuBackground"></a-entity>
+            <a-entity id="menuBack6" mixin="pageButtonBack" scale="1.5 1.5 1.5" position="1.5 1.8 1" rotation="0 0 0"
+                      proxy-event="event: click; to: a-scene; as: menuBack_unit3c"
+                      bind-toggle__raycastable="menu_unit3c !== 'main_unit3c'"
+                      bind__visible="menu_unit3c !== 'main_unit3c'" render-order="menuItem"></a-entity>
+
+            <!-- Main menu. -->
+            <a-mixin id="buttonMain6" mixin="button" bind-toggle__raycastable="menu_unit3c === 'main_unit3c'"></a-mixin>
+            <a-entity id="mainMenu6" bind__visible="menu_unit3c === 'main_unit3c'">
+                <a-entity id="title6" text="value: DAFTAR RUANGAN; color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1" render-order="menuItem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.55" position="0 0.8 1">
+                    <a-entity mixin="buttonMain6" proxy-event="as: menuRuangan1_unit3c">
+                        <a-text id="btnMenuUnit3c1" mixin="buttonText" value="" width="4" position="0 -0.05 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain6" proxy-event="as: menuRuangan2_unit3c">
+                        <a-text id="btnMenuUnit3c2" mixin="buttonText" value="" width="4" position="0 0 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain6" proxy-event="as: menuRuangan3_unit3c">
+                        <a-text id="btnMenuUnit3c3" mixin="buttonText" value="" width="4" position="0 0.02 1"></a-text>
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!--Ruang III/C/1 - FAK-->
+            <a-mixin id="buttonRoomUnit3c1" mixin="button"
+                     bind-toggle__raycastable="menu_unit3c === 'ruangan_unit3c1'"></a-mixin>
+            <a-entity id="RoomMenuUnit3c1" bind__visible="menu_unit3c === 'ruangan_unit3c1'">
+
+                <a-entity id="titleRoomUnit3c1" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoomUnit3c1" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!--Ruang III/C/2 - FAK-->
+            <a-mixin id="buttonRoomUnit3c2" mixin="button"
+                     bind-toggle__raycastable="menu_unit3c === 'ruangan_unit3c2'"></a-mixin>
+            <a-entity id="RoomMenuUnit3c2" bind__visible="menu_unit3c === 'ruangan_unit3c2'">
+
+                <a-entity id="titleRoomUnit3c2" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoomUnit3c2" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!--Ruang III/C/3 - FAK-->
+            <a-mixin id="buttonRoomUnit3c3" mixin="button"
+                     bind-toggle__raycastable="menu_unit3c === 'ruangan_unit3c3'"></a-mixin>
+            <a-entity id="RoomMenuUnit3c3" bind__visible="menu_unit3c === 'ruangan_unit3c3'">
+
+                <a-entity id="titleRoomUnit3c3" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoomUnit3c3" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+    </a-entity>
+    <!--FISKOM (UNIT IV)-->
+    <a-entity visible=true  id="entity-handler7">
+        <a-image id="image-pin7"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 2 0" visible=true>
+            <a-entity id="infoBackground7" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground7"></a-entity>
+            <a-entity id="infoData7" layout="type: box; columns: 1; marginRow: -0.7" position="0 -0.1 1">
+                <a-entity id="text-location7"></a-entity>
+                <a-entity id="text-distance7"></a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Menu container. -->
+        <a-entity id="menu7" look-at="[gps-camera]" position="0 -1.5 0" visible=false>
+            <a-entity id="menuBackground7" mixin="slice" slice9="height: 5.8; width: 4; color: #171717"
+                      render-order="menuBackground"></a-entity>
+            <a-entity id="menuBack7" mixin="pageButtonBack" scale="1.5 1.5 1.5" position="1.5 2.3 1" rotation="0 0 0"
+                      proxy-event="event: click; to: a-scene; as: menuBack_unit4"
+                      bind-toggle__raycastable="menu_unit3 !== 'main_unit4'"
+                      bind__visible="menu_unit4 !== 'main_unit4'" render-order="menuItem"></a-entity>
+
+            <!-- Main menu. -->
+            <a-mixin id="buttonMain7" mixin="button" bind-toggle__raycastable="menu_unit4 === 'main_unit4a'"></a-mixin>
+            <a-entity id="mainMenu7" bind__visible="menu_unit4 === 'main_unit4a'">
+                <a-entity id="title7" text="value: MENU LANTAI; color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1" render-order="menuItem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.55" position="0 0.8 1">
+                    <a-entity mixin="buttonMain7" proxy-event="as: menuLantai1_unit4a">
+                        <a-text id="btnMenulantai1_unit4" mixin="buttonText" value="" width="4"
+                                position="0 -0.05 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain7" proxy-event="as: menuLantai2_unit4b">
+                        <a-text id="btnMenulantai2_unit4" mixin="buttonText" value="" width="4"
+                                position="0 0 1"></a-text>
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!--Lantai I (UNIT IV A)-->
+            <a-mixin id="buttonUnit4a" mixin="button"
+                     bind-toggle__raycastable="menu_unit4 === 'menuLantai1_unit4a'"></a-mixin>
+            <a-entity id="unitMenu4a" bind__visible="menu_unit4 === 'menuLantai1_unit4a'">
+
+                <a-entity id="title7" text="value: MENU RUANGAN; color: #FAFAFA; width: 5; align: center"
+                          position="0 2 1" render-order="menuItem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.55" position="0 1.3 1">
+                    <a-entity mixin="buttonMain7" proxy-event="as: menuRoom1_unit4a">
+                        <a-text id="btnRoom1Unit4a" mixin="buttonText" value="" width="3.5"
+                                position="0 -0.1 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain7" proxy-event="as: menuRoom2_unit4a">
+                        <a-text id="btnRoom2Unit4a" mixin="buttonText" value="" width="3.5"
+                                position="0 -0.07 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain7" proxy-event="as: menuRoom3_unit4a">
+                        <a-text id="btnRoom3Unit4a" mixin="buttonText" value="" width="3.5" position="0 0 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain7" proxy-event="as: menuRoom4_unit4a">
+                        <a-text id="btnRoom4Unit4a" mixin="buttonText" value="" width="3.5"
+                                position="0 0.03 1"></a-text>
+                    </a-entity>
+
+                </a-entity>
+            </a-entity>
+
+            <a-entity>
+                <!--Lab. Co-Creation-->
+                <a-mixin id="btnRoom1_unit4a" mixin="button"
+                         bind-toggle__raycastable="menu_unit4 === 'menuRoom1_unit4a'"></a-mixin>
+                <a-entity id="Room1_unit4a" bind__visible="menu_unit4 === 'menuRoom1_unit4a'">
+
+                    <a-entity id="titleRoom1_unit4a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom1_unit4a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--Ruang IV/A/2-->
+                <a-mixin id="btnRoom2_unit4a" mixin="button"
+                         bind-toggle__raycastable="menu_unit4 === 'menuRoom2_unit4a'"></a-mixin>
+                <a-entity id="Room2_unit4a" bind__visible="menu_unit4 === 'menuRoom2_unit4a'">
+
+                    <a-entity id="titleRoom2_unit4a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom2_unit4a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--Ruang IV/A/3-->
+                <a-mixin id="btnRoom3_unit4a" mixin="button"
+                         bind-toggle__raycastable="menu_unit4 === 'menuRoom3_unit4a'"></a-mixin>
+                <a-entity id="Room3_unit4a" bind__visible="menu_unit4 === 'menuRoom3_unit4a'">
+
+                    <a-entity id="titleRoom3_unit4a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom3_unit4a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--Ruang IV/A/4-->
+                <a-mixin id="btnRoom4_unit4a" mixin="button"
+                         bind-toggle__raycastable="menu_unit4 === 'menuRoom4_unit4a'"></a-mixin>
+                <a-entity id="Room4_unit4a" bind__visible="menu_unit4 === 'menuRoom4_unit4a'">
+
+                    <a-entity id="titleRoom4_unit4a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom4_unit4a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!--Lantai II (UNIT IV B)-->
+            <a-mixin id="buttonUnit4b" mixin="button"
+                     bind-toggle__raycastable="menu_unit4 === 'menuLantai2_unit4b'"></a-mixin>
+            <a-entity id="unitMenu4b" bind__visible="menu_unit4 === 'menuLantai2_unit4b'">
+
+                <a-entity id="title7" text="value: MENU RUANGAN; color: #FAFAFA; width: 5; align: center"
+                          position="0 2 1" render-order="menuItem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.55" position="0 1.3 1">
+                    <a-entity mixin="buttonMain7" proxy-event="as: menuRoom1_unit4b">
+                        <a-text id="btnRoom1Unit4b" mixin="buttonText" value="" width="3.5"
+                                position="0 -0.1 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain7" proxy-event="as: menuRoom2_unit4b">
+                        <a-text id="btnRoom2Unit4b" mixin="buttonText" value="" width="3.5"
+                                position="0 -0.07 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain7" proxy-event="as: menuRoom3_unit4b">
+                        <a-text id="btnRoom3Unit4b" mixin="buttonText" value="" width="3.5" position="0 0 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain7" proxy-event="as: menuRoom4_unit4b">
+                        <a-text id="btnRoom4Unit4b" mixin="buttonText" value="" width="3.5"
+                                position="0 0.03 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain7" proxy-event="as: menuRoom5_unit4b">
+                        <a-text id="btnRoom5Unit4b" mixin="buttonText" value="" width="3.5"
+                                position="0 0.07 1"></a-text>
+                    </a-entity>
+
+                </a-entity>
+            </a-entity>
+            <a-entity>
+                <!--Ruang IV/B/1-->
+                <a-mixin id="btnRoom1_unit4b" mixin="button"
+                         bind-toggle__raycastable="menu_unit4 === 'menuRoom1_unit4b'"></a-mixin>
+                <a-entity id="Room1_unit4b" bind__visible="menu_unit4 === 'menuRoom1_unit4b'">
+
+                    <a-entity id="titleRoom1_unit4b" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom1_unit4b" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--RUANG IV/B/2-->
+                <a-mixin id="btnRoom2_unit4b" mixin="button"
+                         bind-toggle__raycastable="menu_unit4 === 'menuRoom2_unit4b'"></a-mixin>
+                <a-entity id="Room2_unit4b" bind__visible="menu_unit4 === 'menuRoom2_unit4b'">
+
+                    <a-entity id="titleRoom2_unit4b" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom2_unit4b" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--RUANG IV/B/3-->
+                <a-mixin id="btnRoom3_unit4b" mixin="button"
+                         bind-toggle__raycastable="menu_unit4 === 'menuRoom3_unit4b'"></a-mixin>
+                <a-entity id="Room3_unit4b" bind__visible="menu_unit4 === 'menuRoom3_unit4b'">
+
+                    <a-entity id="titleRoom3_unit4b" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom3_unit4b" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--LAB. ELEKTRONIk DAN INTRUMENTASI-->
+                <a-mixin id="btnRoom4_unit4b" mixin="button"
+                         bind-toggle__raycastable="menu_unit4 === 'menuRoom4_unit4b'"></a-mixin>
+                <a-entity id="Room4_unit4b" bind__visible="menu_unit4 === 'menuRoom4_unit4b'">
+
+                    <a-entity id="titleRoom4_unit4b" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom4_unit4b" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--LAB. FISIKA DASAR-->
+                <a-mixin id="btnRoom5_unit4b" mixin="button"
+                         bind-toggle__raycastable="menu_unit4 === 'menuRoom5_unit4b'"></a-mixin>
+                <a-entity id="Room5_unit4b" bind__visible="menu_unit4 === 'menuRoom5_unit4b'">
+
+                    <a-entity id="titleRoom5_unit4b" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom5_unit4b" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+    </a-entity>
+    <!--AMG (UNIT V)-->
+    <a-entity visible=true  id="entity-handler8">
+        <a-image id="image-pin8"></a-image>
+        <a-entity id="info8" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground8" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground">
+                <a-entity id="infoData8" layout="type: box; columns: 1; marginRow: -0.7" position="0 -0.1 1">
+                    <a-entity id="text-location8"></a-entity>
+                    <a-entity id="text-distance8"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Menu container. -->
+        <a-entity id="menu8" look-at="[gps-camera]" position="0 -1.5 0" visible=true>
+            <a-entity id="menuBackground8" mixin="slice" slice9="height: 4.5; width: 4; color: #171717"
+                      render-order="menuBackground">
+            </a-entity>
+
+            <a-entity id="infoImage8">
+                <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                         material="shader: flat; transparent: true" position="0 0.65 1"
+                         src="./img_ruangan.jpg">
+                </a-image>
+            </a-entity>
+
+            <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                <a-entity id="descUnit8" mixin="font" text="align: center; width: 3"></a-entity>
+            </a-entity>
+        </a-entity>
+    </a-entity>
+    <!--Ruang Praktek Musik (UNIT V)-->
+    <a-entity visible=true  id="entity-handler9">
+        <a-image id="image-pin9"></a-image>
+        <a-entity id="info9" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground9" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground">
+                <a-entity id="infoData9" layout="type: box; columns: 1; marginRow: -0.7" position="0 -0.1 1">
+                    <a-entity id="text-location9"></a-entity>
+                    <a-entity id="text-distance9"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Menu container. -->
+        <a-entity id="menu9" look-at="[gps-camera]" position="0 -1.5 0" visible=true>
+            <a-entity id="menuBackground9" mixin="slice" slice9="height: 4.5; width: 4; color: #171717"
+                      render-order="menuBackground">
+            </a-entity>
+
+            <a-entity id="infoImage8">
+                <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                         material="shader: flat; transparent: true" position="0 0.65 1"
+                         src="./img_ruangan.jpg">
+                </a-image>
+            </a-entity>
+
+            <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                <a-entity id="descUnit9" mixin="font" text="align: center; width: 3"></a-entity>
+            </a-entity>
+        </a-entity>
+    </a-entity>
+    <!--Immanuel MUsic Center (UNIT V)-->
+    <a-entity visible=true  id="entity-handler10">
+        <a-image id="image-pin10"></a-image>
+        <a-entity id="info10" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground10" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground">
+                <a-entity id="infoData10" layout="type: box; columns: 1; marginRow: -0.7" position="0 -0.1 1">
+                    <a-entity id="text-location10"></a-entity>
+                    <a-entity id="text-distance10"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Menu container. -->
+        <a-entity id="menu10" look-at="[gps-camera]" position="0 -1.5 0" visible=true>
+            <a-entity id="menuBackground10" mixin="slice" slice9="height: 4.5; width: 4; color: #171717"
+                      render-order="menuBackground">
+            </a-entity>
+
+            <a-entity id="infoImage10">
+                <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                         material="shader: flat; transparent: true" position="0 0.65 1"
+                         src="./img_ruangan.jpg">
+                </a-image>
+            </a-entity>
+
+            <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                <a-entity id="descUnit10" mixin="font" text="align: center; width: 3"></a-entity>
+            </a-entity>
+        </a-entity>
+    </a-entity>
+    <!-- Lab. Komputer 3, PMI,LPPM dan OCI (UNIT VI)-->
+    <a-entity visible=true  id="entity-handler11">
+        <a-image id="image-pin11"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground11" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground"></a-entity>
+            <a-entity id="infoData11" layout="type: box; columns: 1; marginRow: -0.7" position="0 -0.1 1">
+                <a-entity id="text-location11"></a-entity>
+                <a-entity id="text-distance11"></a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Menu container. -->
+        <a-entity id="menu11" look-at="[gps-camera]" position="0 -1.5 0" visible=false>
+            <a-entity id="menuBackground11" mixin="slice" slice9="height: 4.5; width: 4; color: #171717"
+                      render-order="menuBackground"></a-entity>
+            <a-entity id="menuBack11" mixin="pageButtonBack" scale="1.5 1.5 1.5" position="1.5 1.8 1" rotation="0 0 0"
+                      proxy-event="event: click; to: a-scene; as: menuBack_unit6"
+                      bind-toggle__raycastable="menu_unit6 !== 'main_unit6'"
+                      bind__visible="menu_unit6 !== 'main_unit6'" render-order="menuItem"></a-entity>
+
+            <!-- Main menu. -->
+            <a-mixin id="buttonMain11" mixin="button" bind-toggle__raycastable="menu_unit6 === 'main_unit6'"></a-mixin>
+            <a-entity id="mainMenu11" bind__visible="menu_unit6 === 'main_unit6'">
+                <a-entity id="title11" text="value: DAFTAR RUANGAN; color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1" render-order="menuItem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.55" position="0 0.8 1">
+                    <a-entity mixin="buttonMain11" proxy-event="as: menuRuangan1_unit6">
+                        <a-text id="btnMenu1_unit6" mixin="buttonText" value="" width="4" position="0 -0.05 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain11" proxy-event="as: menuRuangan2_unit6">
+                        <a-text id="btnMenu2_unit6" mixin="buttonText" value="" width="2.5" position="0 0 1"></a-text>
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- Lab. komputer 3 -->
+            <a-mixin id="buttonRoom1_unit6" mixin="button"
+                     bind-toggle__raycastable="menu_unit6 === 'menuRuangan1_unit6'"></a-mixin>
+            <a-entity id="RoomMenu_unit6" bind__visible="menu_unit6 === 'menuRuangan1_unit6'">
+
+                <a-entity id="titleRoom1_unit6" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoom1_unit6" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- LPM -->
+            <a-mixin id="buttonRoom2_unit6" mixin="button"
+                     bind-toggle__raycastable="menu_unit6 === 'menuRuangan2_unit6'"></a-mixin>
+            <a-entity id="RoomMenu2_unit6" bind__visible="menu_unit6 === 'menuRuangan2_unit6'">
+
+                <a-entity id="titleRoom2_unit6" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoom2_unit6" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+    </a-entity>
+    <!--Lab. Energi terbarukan (UNIT VII B)-->
+    <a-entity visible=true  id="entity-handler12">
+        <a-image id="image-pin12"></a-image>
+        <a-entity id="info12" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground12" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground">
+                <a-entity id="infoData12" layout="type: box; columns: 1; marginRow: -0.7" position="0 -0.1 1">
+                    <a-entity id="text-location12"></a-entity>
+                    <a-entity id="text-distance12"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Menu container. -->
+        <a-entity id="menu12" look-at="[gps-camera]" position="0 -1.5 0" visible=true>
+            <a-entity id="menuBackground12" mixin="slice" slice9="height: 4.5; width: 4; color: #171717"
+                      render-order="menuBackground">
+            </a-entity>
+
+            <a-entity id="infoImage12">
+                <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                         material="shader: flat; transparent: true" position="0 0.65 1"
+                         src="./img_ruangan.jpg">
+                </a-image>
+            </a-entity>
+
+            <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                <a-entity id="descUnit12" mixin="font" text="align: center; width: 3"></a-entity>
+            </a-entity>
+        </a-entity>
+    </a-entity>
+    <!-- UNIT VII A-->
+    <a-entity visible=true  id="entity-handler13">
+        <a-image id="image-pin13"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 1.5 0" visible=true>
+            <a-entity id="infoBackground13" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground"></a-entity>
+            <a-entity id="infoData13" layout="type: box; columns: 1; marginRow: -0.7" position="0 -0.1 1">
+                <a-entity id="text-location13"></a-entity>
+                <a-entity id="text-distance13"></a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Menu container. -->
+        <a-entity id="menu13" look-at="[gps-camera]" position="0 -1.5 0" visible=false>
+            <a-entity id="menuBackground13" mixin="slice" slice9="height: 4.5; width: 4; color: #171717"
+                      render-order="menuBackground"></a-entity>
+            <a-entity id="menuBack13" mixin="pageButtonBack" scale="1.5 1.5 1.5" position="1.5 1.8 1" rotation="0 0 0"
+                      proxy-event="event: click; to: a-scene; as: menuBack_unit7"
+                      bind-toggle__raycastable="menu_unit7 !== 'main_unit7'"
+                      bind__visible="menu_unit7 !== 'main_unit7'" render-order="menuItem"></a-entity>
+
+            <!-- Main menu. -->
+            <a-mixin id="buttonMain13" mixin="button" bind-toggle__raycastable="menu_unit7 === 'main_unit7'"></a-mixin>
+            <a-entity id="mainMenu13" bind__visible="menu_unit7 === 'main_unit7'">
+                <a-entity id="title13" text="value: DAFTAR RUANGAN; color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1" render-order="menuItem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.55" position="0 0.8 1">
+                    <a-entity mixin="buttonMain13" proxy-event="as: menuRuangan1_unit7">
+                        <a-text id="btnMenu1_unit7" mixin="buttonText" value="" width="4" position="0 -0.05 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain13" proxy-event="as: menuRuangan2_unit7">
+                        <a-text id="btnMenu2_unit7" mixin="buttonText" value="" width="4" position="0 0 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain13" proxy-event="as: menuRuangan3_unit7">
+                        <a-text id="btnMenu3_unit7" mixin="buttonText" value="" width="4" position="0 0 1"></a-text>
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- Ruang VII/A/1 -->
+            <a-mixin id="buttonRoom1_unit7" mixin="button"
+                     bind-toggle__raycastable="menu_unit7 === 'menuRuangan1_unit7'"></a-mixin>
+            <a-entity id="RoomMenu_unit7" bind__visible="menu_unit7 === 'menuRuangan1_unit7'">
+
+                <a-entity id="titleRoom1_unit7" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoom1_unit7" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- Ruang VII/A/2 -->
+            <a-mixin id="buttonRoom2_unit7" mixin="button"
+                     bind-toggle__raycastable="menu_unit7 === 'menuRuangan2_unit7'"></a-mixin>
+            <a-entity id="RoomMenu2_unit7" bind__visible="menu_unit7 === 'menuRuangan2_unit7'">
+
+                <a-entity id="titleRoom2_unit7" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoom2_unit7" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- Ruang VII/A/3 -->
+            <a-mixin id="buttonRoom3_unit7" mixin="button"
+                     bind-toggle__raycastable="menu_unit7 === 'menuRuangan3_unit7'"></a-mixin>
+            <a-entity id="RoomMenu3_unit7" bind__visible="menu_unit7 === 'menuRuangan3_unit7'">
+
+                <a-entity id="titleRoom3_unit7" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoom3_unit7" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+    </a-entity>
+    <!--Saria Marantika (UNIT VIII)-->
+    <a-entity visible=true emitevents="true" cursor="rayOrigin: mouse" id="entity-handler14">
+
+        <a-image id="image-pin14"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 2 0" visible=true>
+            <a-entity id="infoBackground14" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground"></a-entity>
+            <a-entity id="infoData14" layout="type: box; columns: 1; marginRow: -0.7" position="0 -0.1 1">
+                <a-entity id="text-location14"></a-entity>
+                <a-entity id="text-distance14"></a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Menu container. -->
+        <a-entity id="menu15" look-at="[gps-camera]" position="0 -1.5 0" visible=false>
+            <a-entity id="menuBackground15" mixin="slice" slice9="height: 5.8; width: 4; color: #171717"
+                      render-order="menuBackground15"></a-entity>
+            <a-entity id="menuBack14" mixin="pageButtonBack" scale="1.5 1.5 1.5" position="1.5 2.3 1" rotation="0 0 0"
+                      proxy-event="event: click; to: a-scene; as: menuBack_unit8"
+                      bind-toggle__raycastable="menu_unit8 !== 'main_unit8'"
+                      bind__visible="menu_unit8 !== 'main_unit8'" render-order="menuItem"></a-entity>
+
+            <a-entity id="weatherImage">
+                <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                         material="shader: flat; transparent: true" position="0 0.5 1"
+                         src="./img_ruangan.jpg"></a-image>
+            </a-entity>
+
+        </a-entity>
+        <!-- Menu container. -->
+        <a-entity id="menu14" look-at="[gps-camera]" position="0 -1.5 0" visible=false>
+            <a-entity id="menuBackground14" mixin="slice" slice9="height: 5.8; width: 4; color: #171717"
+                      render-order="menuBackground14"></a-entity>
+            <a-entity id="menuBack14" mixin="pageButtonBack" scale="1.5 1.5 1.5" position="1.5 2.3 1" rotation="0 0 0"
+                      proxy-event="event: click; to: a-scene; as: menuBack_unit8"
+                      bind-toggle__raycastable="menu_unit8 !== 'main_unit8'"
+                      bind__visible="menu_unit8 !== 'main_unit8'" render-order="menuItem"></a-entity>
+
+            <!-- Main menu. -->
+            <a-mixin foo id="buttonMain14" mixin="button" bind-toggle__raycastable="menu_unit8 === 'main_unit8'"></a-mixin>
+            <a-entity id="mainMenu14" bind__visible="menu_unit8 === 'main_unit8'">
+                <a-entity id="title14" text="value: MENU LANTAI; color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1" render-order="menuItem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.55" position="0 0.8 1">
+                    <a-entity id="d" mixin="buttonMain14" proxy-event="as: menuRoom1_unit8a">
+                        <a-text id="btnMenulantai1_unit8" mixin="buttonText" value="" width="3"
+                                position="0 -0.05 1"></a-text>
+                    </a-entity>
+                    <a-entity id="e" mixin="buttonMain14" >
+                        <a-text id="btnMenulantai2_unit8" mixin="buttonText" value="" width="3"
+                                position="0 0 1"></a-text>
+                    </a-entity>
+                    <a-entity id="f" mixin="buttonMain14" >
+                        <a-text id="btnMenulantai3_unit8" mixin="buttonText" value="" width="3"
+                                position="0 0 1"></a-text>
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!--Lantai I (UNIT VIII A)-->
+            <a-mixin id="buttonUnit8a" mixin="button"
+                     bind-toggle__raycastable="menu_unit8 === 'menuLantai1_unit8a'"></a-mixin>
+            <a-entity id="unitMenu8a" bind__visible="menu_unit8 === 'menuLantai1_unit8a'">
+
+                <a-entity id="title8" text="value: MENU RUANGAN; color: #FAFAFA; width: 5; align: center"
+                          position="0 2 1" render-order="menuItem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.55" position="0 1.3 1">
+                    <a-entity mixin="buttonMain14" proxy-event="as: menuRoom1_unit8a">
+                        <a-text id="btnRoom1Unit8a" mixin="buttonText" value="" width="3"
+                                position="0 -0.1 1"></a-text>
+                    </a-entity>
+                    <a-entity id="d" mixin="buttonMain14" proxy-event="as: menuRoom2_unit8a">
+                        <a-text id="btnRoom2Unit8a" mixin="buttonText" value="" width="3"
+                                position="0 -0.07 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain14" proxy-event="as: menuRoom3_unit8a">
+                        <a-text id="btnRoom3Unit8a" mixin="buttonText" value="" width="3" position="0 0 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain14" proxy-event="as: menuRoom4_unit8a">
+                        <a-text id="btnRoom4Unit8a" mixin="buttonText" value="" width="3"
+                                position="0 0.03 1"></a-text>
+                    </a-entity>
+
+                </a-entity>
+            </a-entity>
+
+            <a-entity>
+                <!--KANTOR FISKOM-->
+                <a-mixin id="btnRoom1_unit3a" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom1_unit3a'"></a-mixin>
+                <a-entity id="Room1_unit3a" bind__visible="menu_unit3 === 'menuRoom1_unit3a'">
+
+                    <a-entity id="titleRoom1_unit3a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom1_unit3a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--KANTOR FEBI-->
+                <a-mixin id="btnRoom2_unit3a" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom2_unit3a'"></a-mixin>
+                <a-entity id="Room2_unit3a" bind__visible="menu_unit3 === 'menuRoom2_unit3a'">
+
+                    <a-entity id="titleRoom2_unit3a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom2_unit3a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--LAB CO-->
+                <a-mixin id="btnRoom3_unit3a" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom3_unit3a'"></a-mixin>
+                <a-entity id="Room3_unit3a" bind__visible="menu_unit3 === 'menuRoom3_unit3a'">
+
+                    <a-entity id="titleRoom3_unit3a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom3_unit3a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--BURSA EFEK-->
+                <a-mixin id="btnRoom4_unit3a" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom4_unit3a'"></a-mixin>
+                <a-entity id="Room4_unit3a" bind__visible="menu_unit3 === 'menuRoom4_unit3a'">
+
+                    <a-entity id="titleRoom4_unit3a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom4_unit3a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--Ruangan III/A/6-->
+                <a-mixin id="btnRoom5_unit3a" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom5_unit3a'"></a-mixin>
+                <a-entity id="Room5_unit3a" bind__visible="menu_unit3 === 'menuRoom5_unit3a'">
+
+                    <a-entity id="titleRoom5_unit3a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom5_unit3a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--Ruangan III/A/7-->
+                <a-mixin id="btnRoom6_unit3a" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom6_unit3a'"></a-mixin>
+                <a-entity id="Room6_unit3a" bind__visible="menu_unit3 === 'menuRoom6_unit3a'">
+
+                    <a-entity id="titleRoom6_unit3a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom6_unit3a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+
+                <!--Ruangan LAB AKUNTANSI-->
+                <a-mixin id="btnRoom7_unit3a" mixin="button"
+                         bind-toggle__raycastable="menu_unit3 === 'menuRoom7_unit3a'"></a-mixin>
+                <a-entity id="Room7_unit3a" bind__visible="menu_unit3 === 'menuRoom7_unit3a'">
+
+                    <a-entity id="titleRoom7_unit3a" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                              position="0 1.8 1"></a-entity>
+
+                    <a-entity id="weatherImage">
+                        <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                                 material="shader: flat; transparent: true" position="0 0.5 1"
+                                 src="./img_ruangan.jpg"></a-image>
+                    </a-entity>
+
+                    <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                        <a-entity id="descRoom7_unit3a" mixin="font" text="align: center; width: 3"></a-entity>
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!--Lantai II (UNIT VIII B)-->
+            <a-mixin id="buttonUnit8b" mixin="button"
+                     bind-toggle__raycastable="menu_unit8 === 'menuLantai2_unit8b'"></a-mixin>
+            <a-entity id="unitMenu8b" bind__visible="menu_unit8 === 'menuLantai2_unit8b'">
+
+                <a-entity id="title8" text="value: MENU RUANGAN; color: #FAFAFA; width: 5; align: center"
+                          position="0 2 1" render-order="menuItem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.55" position="0 1.3 1">
+                    <a-entity mixin="buttonMain14" proxy-event="as: menuRoom1_unit8b">
+                        <a-text id="btnRoom1Unit8b" mixin="buttonText" value="" width="3"
+                                position="0 -0.1 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain14" proxy-event="as: menuRoom2_unit8b">
+                        <a-text id="btnRoom2Unit8b" mixin="buttonText" value="" width="3"
+                                position="0 -0.07 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain14" proxy-event="as: menuRoom3_unit8b">
+                        <a-text id="btnRoom3Unit8b" mixin="buttonText" value="" width="3" position="0 0 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain14" proxy-event="as: menuRoom4_unit8b">
+                        <a-text id="btnRoom4Unit8b" mixin="buttonText" value="" width="3"
+                                position="0 0.03 1"></a-text>
+                    </a-entity>
+
+                </a-entity>
+            </a-entity>
+
+            <!--Lantai II (UNIT VIII C)-->
+            <a-mixin id="buttonUnit8c" mixin="button"
+                     bind-toggle__raycastable="menu_unit10 === 'menuLantai3_unit8c'"></a-mixin>
+            <a-entity id="unitMenu8c" bind__visible="menu_unit10 === 'menuLantai3_unit8c'">
+
+                <a-entity id="title8" text="value: MENU RUANGAN; color: #FAFAFA; width: 5; align: center"
+                          position="0 2 1" render-order="menuItem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.55" position="0 1.3 1">
+                    <a-entity mixin="buttonMain14" proxy-event="as: menuRoom1_unit8c">
+                        <a-text id="btnRoom1Unit8c" mixin="buttonText" value="" width="3"
+                                position="0 -0.1 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain14" proxy-event="as: menuRoom2_unit8c">
+                        <a-text id="btnRoom2Unit8c" mixin="buttonText" value="" width="3"
+                                position="0 -0.07 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain14" proxy-event="as: menuRoom3_unit8c">
+                        <a-text id="btnRoom3Unit8c" mixin="buttonText" value="" width="3" position="0 0 1"></a-text>
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+        </a-entity>
+    </a-entity>
+    <!-- UNIT VIII D-->
+    <a-entity visible=true id="entity-handler15">
+        <a-image id="image-pin15"></a-image>
+        <a-entity id="info" look-at="[gps-camera]" position=" 0 2 0" visible=true>
+            <a-entity id="infoBackground15" mixin="slice" slice9="height: 1; width: 4; color: #171717"
+                      render-order="menuBackground"></a-entity>
+            <a-entity id="infoData15" layout="type: box; columns: 1; marginRow: -0.7" position="0 -0.1 1">
+                <a-entity id="text-location15"></a-entity>
+                <a-entity id="text-distance15"></a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Menu container. -->
+        <a-entity id="menu15" look-at="[gps-camera]" position="0 -1.5 0" visible=false>
+            <a-entity id="menuBackground15" mixin="slice" slice9="height: 5.8; width: 4; color: #171717"
+                      render-order="menuBackground"></a-entity>
+            <a-entity id="menuBack15" mixin="pageButtonBack" scale="1.5 1.5 1.5" position="1.5 2.3 1" rotation="0 0 0"
+                      proxy-event="event: click; to: a-scene; as: menuBack_unit9"
+                      bind-toggle__raycastable="menu_unit9 !== 'main_unit9'"
+                      bind__visible="menu_unit9 !== 'main_unit9'" render-order="menuItem"></a-entity>
+
+            <!-- Main menu. -->
+            <a-mixin id="buttonMain15" mixin="button" bind-toggle__raycastable="menu_unit9 === 'main_unit9'"></a-mixin>
+            <a-entity id="mainMenu15" position="0 0.5 0" bind__visible="menu_unit9 === 'main_unit9'">
+                <a-entity id="title15" text="value: DAFTAR RUANGAN; color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1" render-order="menuItem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.55" position="0 0.8 1">
+                    <a-entity mixin="buttonMain15" proxy-event="as: menuRuangan1_unit9">
+                        <a-text id="btnMenu1_unit9" mixin="buttonText" value="" width="3" position="0 -0.05 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain15" proxy-event="as: menuRuangan2_unit9">
+                        <a-text id="btnMenu2_unit9" mixin="buttonText" value="" width="3" position="0 -0.02 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain15" proxy-event="as: menuRuangan3_unit9">
+                        <a-text id="btnMenu3_unit9" mixin="buttonText" value="" width="3" position="0 0 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain15" proxy-event="as: menuRuangan4_unit9">
+                        <a-text id="btnMenu4_unit9" mixin="buttonText" value="" width="3" position="0 0 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain15" proxy-event="as: menuRuangan5_unit9">
+                        <a-text id="btnMenu5_unit9" mixin="buttonText" value="" width="3" position="0 0.05 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain15" proxy-event="as: menuRuangan6_unit9">
+                        <a-text id="btnMenu6_unit9" mixin="buttonText" value="" width="3" position="0 0.08 1"></a-text>
+                    </a-entity>
+                    <a-entity mixin="buttonMain15" proxy-event="as: menuRuangan7_unit9">
+                        <a-text id="btnMenu7_unit9" mixin="buttonText" value="" width="3" position="0 0.1 1"></a-text>
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- LAB. ENERGI -->
+            <a-mixin id="buttonRoom1_unit9" mixin="button"
+                     bind-toggle__raycastable="menu_unit9 === 'menuRuangan1_unit9'"></a-mixin>
+            <a-entity id="RoomMenu_unit9" bind__visible="menu_unit9 === 'menuRuangan1_unit9'">
+
+                <a-entity id="titleRoom1_unit9" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoom1_unit9" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- Lab. Dispensing Compunding -->
+            <a-mixin id="buttonRoom2_unit9" mixin="button"
+                     bind-toggle__raycastable="menu_unit9 === 'menuRuangan2_unit9'"></a-mixin>
+            <a-entity id="RoomMenu_unit9" bind__visible="menu_unit9 === 'menuRuangan2_unit9'">
+
+                <a-entity id="titleRoom2_unit9" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoom2_unit9" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- Lab. Farmakologi -->
+            <a-mixin id="buttonRoom3_unit9" mixin="button"
+                     bind-toggle__raycastable="menu_unit9 === 'menuRuangan3_unit9'"></a-mixin>
+            <a-entity id="RoomMenu3_unit9" bind__visible="menu_unit9 === 'menuRuangan3_unit9'">
+
+                <a-entity id="titleRoom3_unit9" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoom3_unit9" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- Ruang Kewirausahaan -->
+            <a-mixin id="buttonRoom4_unit9" mixin="button"
+                     bind-toggle__raycastable="menu_unit9 === 'menuRuangan4_unit9'"></a-mixin>
+            <a-entity id="RoomMenu4_unit9" bind__visible="menu_unit9 === 'menuRuangan4_unit9'">
+
+                <a-entity id="titleRoom4_unit9" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoom4_unit9" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- Ruang Laboran -->
+            <a-mixin id="buttonRoom5_unit9" mixin="button"
+                     bind-toggle__raycastable="menu_unit9 === 'menuRuangan5_unit9'"></a-mixin>
+            <a-entity id="RoomMenu5_unit9" bind__visible="menu_unit9 === 'menuRuangan5_unit9'">
+
+                <a-entity id="titleRoom5_unit9" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoom5_unit9" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- Lab. Kimia -->
+            <a-mixin id="buttonRoom6_unit9" mixin="button"
+                     bind-toggle__raycastable="menu_unit9 === 'menuRuangan6_unit9'"></a-mixin>
+            <a-entity id="RoomMenu6_unit9" bind__visible="menu_unit9 === 'menuRuangan6_unit9'">
+
+                <a-entity id="titleRoom6_unit9" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoom6_unit9" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- Lab. Hewan Uji -->
+            <a-mixin id="buttonRoom7_unit9" mixin="button"
+                     bind-toggle__raycastable="menu_unit9 === 'menuRuangan7_unit9'"></a-mixin>
+            <a-entity id="RoomMenu7_unit9" bind__visible="menu_unit9 === 'menuRuangan7_unit9'">
+
+                <a-entity id="titleRoom7_unit9" mixin="font" text="color: #FAFAFA; width: 5; align: center"
+                          position="0 1.5 1"></a-entity>
+
+                <a-entity id="weatherImage">
+                    <a-image geometry="primitive: plane; width: 2.5; height: 1.5"
+                             material="shader: flat; transparent: true" position="0 0.5 1"
+                             src="./img_ruangan.jpg"></a-image>
+                </a-entity>
+
+                <a-entity layout="type: box; columns: 1; marginRow: -0.7" position="0 -1 1">
+                    <a-entity id="descRoom7_unit9" mixin="font" text="align: center; width: 3"></a-entity>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+    </a-entity>
+
+
+    <!-- Mouse cursor so we can click on the scene with mouse or touch. -->
+    <a-entity id="mouseCursor" cursor="rayOrigin: mouse" raycaster="objects: [raycastable]"></a-entity>
+    <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: [raycastable]"></a-entity>
+    <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: [raycastable]"></a-entity>
+</a-scene>
+
+</body>
+<script>
+  // document.querySelector('#d').addEventListener('click', function (evt) {
+  //   console.log('This d!');
+  //   document.querySelector('#menu14').setAttribute('visible', false);
+  //   document.querySelector('#menu15').setAttribute('visible', true);
+  // });
+  document.querySelector('#d').addEventListener('click', function (evt) {
+    console.log('This d!');
+    // document.querySelector('#unitMenu8a').style.display = 'block';
+    // document.querySelector('#d').setAttribute('proxy-event', '');
+    // document.querySelector('#e').setAttribute('proxy-event', '');
+    // document.querySelector('#f').setAttribute('proxy-event', '');
+    // document.querySelector('#menu14').setAttribute('visible', false);
+
+  });
+  document.querySelector('#e').addEventListener('click', function (evt) {
+    console.log('This e!');
+    // document.querySelector('#d').setAttribute('proxy-event', '');
+    // document.querySelector('#e').setAttribute('proxy-event', '');
+    // document.querySelector('#f').setAttribute('proxy-event', '');
+    // document.querySelector('#menu14').setAttribute('visible', false);
+  });
+  document.querySelector('#f').addEventListener('click', function (evt) {
+    console.log('This f!');
+    // document.querySelector('#d').setAttribute('proxy-event', '');
+    // document.querySelector('#e').setAttribute('proxy-event', '');
+    // document.querySelector('#f').setAttribute('proxy-event', '');
+    // document.querySelector('#menu14').setAttribute('visible', false);
+  });
+</script>
+</html>
