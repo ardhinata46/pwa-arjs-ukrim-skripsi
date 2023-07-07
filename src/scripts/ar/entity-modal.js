@@ -866,9 +866,9 @@ const imagePin15 = document.querySelector('#more-info15');
             document.querySelector('#modal-body2').innerHTML = infoRuangan_unit8d();
             document.querySelector('#exampleModalLabel').innerHTML = `${locations[14].unit.room.kimia.name.toUpperCase().bold()}`;
             document.querySelector('#descInfoRuangan_unit8d').innerHTML = `${locations[14].unit.room.kimia.desc}`;
-            document.querySelector('#img-ruang1-unit8d').setAttribute('src','./img_gedung/lab_farmasi/kimia/labKimia1.jpg');
-            document.querySelector('#img-ruang2-unit8d').setAttribute('src','./img_gedung/lab_farmasi/kimia/labKimia2.jpg');
-            document.querySelector('#img-ruang3-unit8d').setAttribute('src','./img_gedung/lab_farmasi/kimia/labKimia3.jpg');
+            document.querySelector('#img-ruang1-unit8d').setAttribute('src','./img_gedung/lab_farmasi/kimia/labKimia4.png');
+            document.querySelector('#img-ruang2-unit8d').setAttribute('src','./img_gedung/lab_farmasi/kimia/labKimia5.png');
+            document.querySelector('#img-ruang3-unit8d').setAttribute('src','./img_gedung/lab_farmasi/kimia/labKimia6.png');
 
           });
         document.querySelector('#button7_unit8d')

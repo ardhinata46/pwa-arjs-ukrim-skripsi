@@ -12,6 +12,8 @@ let locations = [
         'di lingkungan kampus UKRIM. Fungsi utama auditorium UKRIM adalah sebagai tempat untuk mengadakan ' +
         'ibadah, kuliah umum, seminar, konferensi, dan berbagai acara lainnya yang melibatkan mahasiswa, ' +
         'dosen, staf, serta tamu undangan dari dalam dan luar kampus.'
+        +
+        `<p><b>Kapasitas : 500 Orang</b></p>`
     }
   },
   {
