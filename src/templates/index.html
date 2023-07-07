@@ -38,22 +38,6 @@
 
 </head>
 
-<style>
-    #message {
-        position: fixed;
-        z-index: 10;
-        left: 5%;
-        bottom: 30px;
-        width: 90%;
-        padding: 2%;
-        color: #fff;
-        font-weight: bold;
-        background-color: rgba(0, 0, 0, .8);
-        border-radius: 20px;
-        border: 3px solid #fff;
-        display: none;
-    }
-</style>
 <body style="margin : 0px; overflow: hidden;">
 <div id="message"></div>
 
@@ -62,16 +46,16 @@
          arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false;'
          renderer='antialias: true; alpha: true'>
 
-<!--    <a-camera-->
-<!--            gps-camera="gpsMinDistance:10;"-->
-<!--            rotation-reader></a-camera>-->
     <a-camera
-            gps-camera="simulateLatitude:-7.775324654571177; simulateLongitude: 110.45077449648089; gpsMinDistance: 10"
+            gps-camera="gpsMinDistance:10;"
             rotation-reader></a-camera>
-    <a-assets>
+<!--    <a-camera-->
+<!--            gps-camera="simulateLatitude:-7.775151233771367; simulateLongitude: 110.45078340450802; gpsMinDistance: 10"-->
+<!--            rotation-reader></a-camera>-->
+<!--    <a-assets>-->
         <!-- Images. -->
-        <img id="backIconImg" src="./exit.png">
-        <img id="pageIconImg" src="./next-button.png">
+<!--        <img id="backIconImg" src="./exit.png">-->
+<!--        <img id="pageIconImg" src="./next-button.png">-->
         <img id="sliceImg" src="https://cdn.glitch.com/0ddef241-2c1a-4bc2-8d47-58192c718908%2Fslice.png?1557308835598"
              crossorigin>
 

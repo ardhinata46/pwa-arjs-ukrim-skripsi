@@ -13,8 +13,6 @@ const assetsToCache = [
   './icons/icon-384x384.png',
   './icons/icon-512x512.png',
   './img_ruangan.jpg',
-  './pin3.png',
-  './exit.png',
   './index.html',
   './app.bundle.js',
   './app.webmanifest.json',
