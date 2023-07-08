@@ -2,13 +2,10 @@ const infoGedung_unit3c = () =>
   `<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img class="d-block w-100" src="./img_ruangan.jpg" alt="First slide">
+                            <img class="d-block w-100" src="./img_gedung/unit3c/unit3c1.jpg" alt="First slide">
                         </div>
                         <div class="carousel-item">
-                            <img class="d-block w-100" src="./img_ruangan.jpg" alt="Second slide">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="d-block w-100" src="./img_ruangan.jpg" alt="Third slide">
+                            <img class="d-block w-100" src="./img_gedung/unit3c/unit3c2.jpg" alt="Second slide">
                         </div>
                     </div>
                     <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">

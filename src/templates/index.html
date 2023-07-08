@@ -18,42 +18,19 @@
     <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
 <!--        <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>-->
     <script src="https://raw.githack.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
-<!--    <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>-->
     <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
 
     <!-- slice9: Create panels and backgrounds. -->
     <script src="https://unpkg.com/aframe-slice9-component@1.0.0/dist/aframe-slice9-component.min.js"></script>
     <!-- layout: Arrange and position entities automatically. -->
     <script src="https://unpkg.com/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
-    <!-- environment: Pretty stage presets. -->
-    <!--    <script src="https://unpkg.com/aframe-environment-component@2.0.0/dist/aframe-environment-component.min.js"></script>-->
-    <!-- proxy-event: Declaratively capture and event and reroute it to another entity. -->
+      <!-- proxy-event: Declaratively capture and event and reroute it to another entity. -->
     <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
     <!-- render-order: Control rendering order for transparent objects. -->
     <script src="https://unpkg.com/aframe-render-order-component@1.0.0/dist/aframe-render-order-component.min.js"></script>
-    <!-- state: Manage application state and bind it to parts of the application to automatically react to state changes. -->
-    <script src="https://unpkg.com/aframe-state-component@6.6.0/dist/aframe-state-component.min.js"></script>
-
-    <script src="https://unpkg.com/aframe-controller-cursor-component@0.2.x/dist/aframe-controller-cursor-component.min.js"></script>
 
 </head>
 
-<style>
-    #message {
-        position: fixed;
-        z-index: 10;
-        left: 5%;
-        bottom: 30px;
-        width: 90%;
-        padding: 2%;
-        color: #fff;
-        font-weight: bold;
-        background-color: rgba(0, 0, 0, .8);
-        border-radius: 20px;
-        border: 3px solid #fff;
-        display: none;
-    }
-</style>
 <body style="margin : 0px; overflow: hidden;">
 <div id="message"></div>
 
@@ -62,16 +39,14 @@
          arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false;'
          renderer='antialias: true; alpha: true'>
 
-<!--    <a-camera-->
-<!--            gps-camera="gpsMinDistance:10;"-->
-<!--            rotation-reader></a-camera>-->
     <a-camera
-            gps-camera="simulateLatitude:-7.775324654571177; simulateLongitude: 110.45077449648089; gpsMinDistance: 10"
+            gps-camera="gpsMinDistance:10;"
             rotation-reader></a-camera>
+<!--    <a-camera-->
+<!--            gps-camera="simulateLatitude:-7.774645047710771; simulateLongitude: 110.44925511571577; gpsMinDistance: 10"-->
+<!--            rotation-reader></a-camera>-->
     <a-assets>
-        <!-- Images. -->
-        <img id="backIconImg" src="./exit.png">
-        <img id="pageIconImg" src="./next-button.png">
+
         <img id="sliceImg" src="https://cdn.glitch.com/0ddef241-2c1a-4bc2-8d47-58192c718908%2Fslice.png?1557308835598"
              crossorigin>
 

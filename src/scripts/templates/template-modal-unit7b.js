@@ -9,7 +9,10 @@ const infoGedung_unit7b = () =>
                             <img class="d-block w-100" src="./img_gedung/energi_terbarukan/energiTerbarukan2.jpg" alt="Second slide">
                         </div>
                         <div class="carousel-item">
-                            <img class="d-block w-100" src="./img_gedung/energi_terbarukan/energiTerbarukan3.jpg" alt="Third slide">
+                            <img class="d-block w-100" src="./img_gedung/energi_terbarukan/energiTerbarukan4.jpg" alt="Third slide">
+                        </div>
+                         <div class="carousel-item">
+                            <img class="d-block w-100" src="./img_gedung/energi_terbarukan/energiTerbarukan5.jpg" alt="Third slide">
                         </div>
                     </div>
                     <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">

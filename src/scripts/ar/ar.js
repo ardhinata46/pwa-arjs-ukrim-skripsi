@@ -22,14 +22,12 @@ window.onload = () => {
       // add place name
       const placeText = document.getElementById(locs[i]);
       placeText.setAttribute('text', `value: ${name.toUpperCase()}`);
-      // placeText.setAttribute('text','mixin: font');
       placeText.setAttribute('text','width: 5')
       placeText.setAttribute('text', 'align: center');
       placeText.setAttribute('position', '0 0.05 1');
 
       // add distance
       const placeDistance = document.getElementById(diss[i]);
-      // placeDistance.setAttribute('text','mixin: font');
       placeDistance.setAttribute('text','width: 5')
       placeDistance.setAttribute('text', 'align: center');
       placeDistance.setAttribute('position', '0 -0.25 1');

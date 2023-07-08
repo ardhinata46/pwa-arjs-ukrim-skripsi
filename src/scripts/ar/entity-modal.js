@@ -404,9 +404,8 @@ const imagePin15 = document.querySelector('#more-info15');
         // btn menu ruangan lantai 2
         document.querySelector('#button1_unit4b').innerHTML = `${locations[6].unit.lantai_2.room.classroom_1.name}`;
         document.querySelector('#button2_unit4b').innerHTML = `${locations[6].unit.lantai_2.room.classroom_2.name}`;
-        document.querySelector('#button3_unit4b').innerHTML = `${locations[6].unit.lantai_2.room.classroom_3.name}`;
-        document.querySelector('#button4_unit4b').innerHTML = `${locations[6].unit.lantai_2.room.labElecInst.alias}`;
-        document.querySelector('#button5_unit4b').innerHTML = `${locations[6].unit.lantai_2.room.labFisDas.name}`;
+        document.querySelector('#button3_unit4b').innerHTML = `${locations[6].unit.lantai_2.room.labElecInst.alias}`;
+        document.querySelector('#button4_unit4b').innerHTML = `${locations[6].unit.lantai_2.room.labFisDas.name}`;
 
         //  LANTAI 1
         document.querySelector('#button1_unit4a')
@@ -414,9 +413,9 @@ const imagePin15 = document.querySelector('#more-info15');
             document.querySelector('#modal-body2').innerHTML = infoRuangan_unit4();
             document.querySelector('#exampleModalLabel').innerHTML = `${locations[6].unit.lantai_1.room.classroom_1.name.toUpperCase().bold()}`;
             document.querySelector('#descInfoRuangan_unit4').innerHTML = `${locations[6].unit.lantai_1.room.classroom_1.desc}`;
-            document.querySelector('#img-ruang1-unit4').setAttribute('src','./img_gedung/fiskom/lantai1/co_creation/co_creation1.jpg');
-            document.querySelector('#img-ruang2-unit4').setAttribute('src','./img_gedung/fiskom/lantai1/co_creation/co_creation2.jpg');
-            document.querySelector('#img-ruang3-unit4').setAttribute('src','./img_gedung/fiskom/lantai1/co_creation/co_creation3.jpg');
+            document.querySelector('#img-ruang1-unit4').setAttribute('src','./img_gedung/fiskom/lantai1/co_creation/co_creation4.jpeg');
+            document.querySelector('#img-ruang2-unit4').setAttribute('src','./img_gedung/fiskom/lantai1/co_creation/co_creation5.jpeg');
+            document.querySelector('#img-ruang3-unit4').setAttribute('src','./img_gedung/fiskom/lantai1/co_creation/co_creation6.jpeg');
 
           });
         document.querySelector('#button2_unit4a')
@@ -470,17 +469,8 @@ const imagePin15 = document.querySelector('#more-info15');
             document.querySelector('#img-ruang3-unit4').setAttribute('src','./img_gedung/fiskom/lantai2/kelas4b2/kelas_4b2_1.jpg');
 
           });
-        document.querySelector('#button3_unit4b')
-          .addEventListener('click', function (ev, target) {
-            document.querySelector('#modal-body2').innerHTML = infoRuangan_unit4();
-            document.querySelector('#exampleModalLabel').innerHTML = `${locations[6].unit.lantai_2.room.classroom_3.name.toUpperCase().bold()}`;
-            document.querySelector('#descInfoRuangan_unit4').innerHTML = `${locations[6].unit.lantai_2.room.classroom_3.desc}`;
-            document.querySelector('#img-ruang1-unit4').setAttribute('src','./img_gedung/fiskom/lantai2/kelas4b3/kelas_4b3_1.jpg');
-            document.querySelector('#img-ruang2-unit4').setAttribute('src','./img_gedung/fiskom/lantai2/kelas4b3/kelas_4b3_2.jpg');
-            document.querySelector('#img-ruang3-unit4').setAttribute('src','./img_gedung/fiskom/lantai2/kelas4b3/kelas_4b3_1.jpg');
 
-          });
-        document.querySelector('#button4_unit4b')
+        document.querySelector('#button3_unit4b')
           .addEventListener('click', function (ev, target) {
             document.querySelector('#modal-body2').innerHTML = infoRuangan_unit4();
             document.querySelector('#exampleModalLabel').innerHTML = `${locations[6].unit.lantai_2.room.labElecInst.name.toUpperCase().bold()}`;
@@ -490,7 +480,7 @@ const imagePin15 = document.querySelector('#more-info15');
             document.querySelector('#img-ruang3-unit4').setAttribute('src','./img_gedung/fiskom/lantai2/lab_elek_inst/lab_elek_inst_3.jpg');
 
           });
-        document.querySelector('#button5_unit4b')
+        document.querySelector('#button4_unit4b')
           .addEventListener('click', function (ev, target) {
             document.querySelector('#modal-body2').innerHTML = infoRuangan_unit4();
             document.querySelector('#exampleModalLabel').innerHTML = `${locations[6].unit.lantai_2.room.labFisDas.name.toUpperCase().bold()}`;
@@ -866,9 +856,9 @@ const imagePin15 = document.querySelector('#more-info15');
             document.querySelector('#modal-body2').innerHTML = infoRuangan_unit8d();
             document.querySelector('#exampleModalLabel').innerHTML = `${locations[14].unit.room.kimia.name.toUpperCase().bold()}`;
             document.querySelector('#descInfoRuangan_unit8d').innerHTML = `${locations[14].unit.room.kimia.desc}`;
-            document.querySelector('#img-ruang1-unit8d').setAttribute('src','./img_gedung/lab_farmasi/kimia/labKimia1.jpg');
-            document.querySelector('#img-ruang2-unit8d').setAttribute('src','./img_gedung/lab_farmasi/kimia/labKimia2.jpg');
-            document.querySelector('#img-ruang3-unit8d').setAttribute('src','./img_gedung/lab_farmasi/kimia/labKimia3.jpg');
+            document.querySelector('#img-ruang1-unit8d').setAttribute('src','./img_gedung/lab_farmasi/kimia/labKimia4.png');
+            document.querySelector('#img-ruang2-unit8d').setAttribute('src','./img_gedung/lab_farmasi/kimia/labKimia5.png');
+            document.querySelector('#img-ruang3-unit8d').setAttribute('src','./img_gedung/lab_farmasi/kimia/labKimia6.png');
 
           });
         document.querySelector('#button7_unit8d')

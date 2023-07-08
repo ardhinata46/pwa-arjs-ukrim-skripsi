@@ -10,6 +10,9 @@ const infoGedung_unit2a = () =>
                         <div class="carousel-item">
                             <img class="d-block w-100" src="./img_gedung/teknik_sipil/teknik_sipil_3.jpg" alt="Third slide">
                         </div>
+                        <div class="carousel-item">
+                            <img class="d-block w-100" src="./img_gedung/teknik_sipil/teknik_sipil_4.jpg" alt="Third slide">
+                        </div>
                     </div>
                     <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>

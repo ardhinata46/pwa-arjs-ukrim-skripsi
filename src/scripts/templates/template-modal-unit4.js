@@ -2,13 +2,13 @@ const infoGedung_unit4 = () =>
   ` <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img class="d-block w-100" src="./img_gedung/fiskom/fiskom.jpg" alt="First slide">
+                            <img class="d-block w-100" src="./img_gedung/fiskom/fiskom2.jpg" alt="First slide">
                         </div>
                         <div class="carousel-item">
-                            <img class="d-block w-100" src="./img_gedung/fiskom/fiskom.jpg" alt="Second slide">
+                            <img class="d-block w-100" src="./img_gedung/fiskom/fiskom2.jpg" alt="Second slide">
                         </div>
                         <div class="carousel-item">
-                            <img class="d-block w-100" src="./img_gedung/fiskom/fiskom.jpg" alt="Third slide">
+                            <img class="d-block w-100" src="./img_gedung/fiskom/fiskom2.jpg" alt="Third slide">
                         </div>
                     </div>
                     <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
@@ -53,7 +53,6 @@ const infoGedung_unit4 = () =>
                 <button type="button" id="button2_unit4b" data-dismiss="modal" data-toggle="modal" href="#exampleModal" style="margin-top: 10px; margin-bottom: 10px; margin-right: auto; margin-left: auto; display: block" class="btn btn-outline-danger btn-radius"></button>
                 <button type="button" id="button3_unit4b" data-dismiss="modal" data-toggle="modal" href="#exampleModal" style="margin-top: 10px; margin-bottom: 10px; margin-right: auto; margin-left: auto; display: block" class="btn btn-outline-danger btn-radius"></button>
                 <button type="button" id="button4_unit4b" data-dismiss="modal" data-toggle="modal" href="#exampleModal" style="margin-top: 10px; margin-bottom: 10px; margin-right: auto; margin-left: auto; display: block" class="btn btn-outline-danger btn-radius"></button>
-                <button type="button" id="button5_unit4b" data-dismiss="modal" data-toggle="modal" href="#exampleModal" style="margin-top: 10px; margin-bottom: 10px; margin-right: auto; margin-left: auto; display: block" class="btn btn-outline-danger btn-radius"></button>
       </div>
     </div>
   </div>

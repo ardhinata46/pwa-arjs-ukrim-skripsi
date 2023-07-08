@@ -1,0 +1,14 @@
+#message {
+    position: fixed;
+    z-index: 10;
+    left: 5%;
+    bottom: 30px;
+    width: 90%;
+    padding: 2%;
+    color: #fff;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, .8);
+    border-radius: 20px;
+    border: 3px solid #fff;
+    display: none;
+}
