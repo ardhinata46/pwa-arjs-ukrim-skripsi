@@ -2,7 +2,10 @@
 const infoGedung_unit1b = () =>
   `<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner">
-                        <div class="carousel-item active">
+                     <div class="carousel-item active">
+                            <img class="d-block w-100" src="./img_gedung/perpustakaan/perpustakaan.jpg" alt="First slide">
+                        </div>
+                        <div class="carousel-item">
                             <img class="d-block w-100" src="./img_gedung/perpustakaan/perpustakaan1.png" alt="First slide">
                         </div>
                         <div class="carousel-item">

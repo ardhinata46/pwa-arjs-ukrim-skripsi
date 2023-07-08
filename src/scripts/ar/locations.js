@@ -5,13 +5,10 @@ let locations = [
       name: 'Unit I A',
       name_loca: 'Kapel/Auditorium UKRIM',
       loca: {
-        latitude: -7.775223679917113,
-        longitude: 110.44962914356081,
+        latitude: -7.7752642315932095,
+        longitude: 110.44962167116275,
       },
-      desc: 'Kapel/Auditorium UKRIM  berfungsi sebagai tempat untuk mengadakan berbagai acara penting ' +
-        'di lingkungan kampus UKRIM. Fungsi utama auditorium UKRIM adalah sebagai tempat untuk mengadakan ' +
-        'ibadah, kuliah umum, seminar, konferensi, dan berbagai acara lainnya yang melibatkan mahasiswa, ' +
-        'dosen, staf, serta tamu undangan dari dalam dan luar kampus.'
+      desc: '<p>Auditorium/Kapel UKRIM bisa disebut gedung serbaguna, karena gedung ini dapat digunakan sebagai tempat untuk mengadakan berbagai acara, pertemuan, dan perayaan yang melibatkan seluruh civitas akademika UKRIM. Auditorium/kapel dapat digunakan untuk mengadakan  seminar, workshop, pertunjukan musik, drama, dan berbagai acara budaya. Selain itu, auditorium juga sering digunakan untuk upacara kelulusan, penerimaan mahasiswa baru, dan acara penting lainnya yang melibatkan seluruh komunitas kampus. Selain itu, Auditorium/Kapel juga berfungsi sebagai tempat ibadah dan perayaan hari raya bagi civitas akademika UKRIM.</p>'
         +
         `<p><b>Kapasitas : 500 Orang</b></p>`
     }
@@ -22,8 +19,8 @@ let locations = [
       name: 'Unit I B',
       name_loca: 'Perpustakaan UKRIM',
       loca: {
-        latitude: -7.775065408887494,
-        longitude:  110.44973571275045,
+        latitude: -7.775091274700275,
+        longitude:  110.44975694239776,
       },
       desc: '<p>Perpustakaan kampus UKRIM berfungsi sebagai sumber informasi yang menyediakan akses kepada berbagai jenis bahan pustaka dan sumber daya digital untuk mendukung kegiatan akademik, penelitian, dan pembelajaran di lingkungan kampus. Selain itu, perpustakaan UKRIM juga berperan dalam mengembangkan keterampilan literasi informasi dan menyediakan ruang belajar yang nyaman serta menyimpan dan mengarsipkan karya akademik. Dengan fungsi-fungsi ini, perpustakaan kampus menjadi pusat pengetahuan yang mendukung pengembangan intelektual dan kemajuan akademik bagi mahasiswa, dosen, dan staf kampus.</p>'
     + '<p>Beberapa fasilitas yang ada di perpustakaan UKRIM meliputi:</p>'
@@ -259,8 +256,8 @@ let locations = [
       name: 'Unit IV',
       name_loca: 'Fakultas Sains & Komputer',
       loca: {
-        latitude: -7.774610491246642,
-        longitude: 110.44911428513629,
+        latitude: -7.774642390157188,
+        longitude: 110.44910088869895
       },
       lantai_1: {
         name: 'Lantai 1 (Unit IV A)',
@@ -320,20 +317,6 @@ let locations = [
             +
               '<p><b>Kapasitas : 20 Orang</b></p>'
           },
-          classroom_3: {
-            name: 'Ruang IV/B/3',
-            prodi: 'Fisika',
-            desc: 'Ruangan IV/B/3 digunakan untuk kegiatan belajar dan mengajar antara dosen' +
-              ' dan mahasiswa. Ruang kelas juga digunakan untuk ' +
-              'pelaksanaan ujian, praktik, dan evaluasi akademik.',
-            facility: {
-              name_facil_1: '1. Meja dan Kursi',
-              name_facil_2: '2. Proyektor atau layar (LCD)',
-              name_facil_3: '3. Papan tulis',
-              name_facil_4: '4. AC',
-              name_facil_5: '5. Wifi'
-            }
-          },
           labFisDas: {
             name: 'Lab. Fisika Dasar',
             prodi: 'Fisika',
@@ -354,7 +337,7 @@ let locations = [
         latitude: -7.775814782092391,
         longitude: 110.45024935289838,
       },
-      desc: '<p>Auditorium Musik Gereja(AMG) bisa disebut sebagai ruang serbaguna, pasalnya area ini dapat digunakan untuk berbagai aktivitas seperti seminar, workshop pendidikan dan kegiatan sejenis, bahkan digunakan sebagai tempat untuk kuliah umum. Fungsi utama auditorium adalah sebagai tempat untuk menyelenggarakan pertemuan atau acara yang melibatkan audiens yang besar. Auditorium mempunyai fasilitas yang lengkap mulai dari kursi, pendingin ruangan, apeaker, podium, panggung hingga proyektor LCD. </p>'
+      desc: '<p>Auditorium Musik Gereja(AMG) bisa disebut sebagai gedung serbaguna, karena gedung ini dapat digunakan untuk berbagai aktivitas seperti seminar, workshop pendidikan dan kegiatan sejenis, bahkan digunakan sebagai tempat untuk kuliah umum. Fungsi utama auditorium adalah sebagai tempat untuk menyelenggarakan pertemuan atau acara yang melibatkan audiens yang besar. Auditorium mempunyai fasilitas yang lengkap mulai dari kursi, pendingin ruangan, speaker, podium, panggung hingga proyektor LCD. </p>'
       +
       '<p><b>Kapasitas : 200 Orang</b></p>'
     }
@@ -391,14 +374,14 @@ let locations = [
     id: 10,
     unit: {
       name: 'Unit VI',
-      name_loca: 'Lab. Komputer 3 & LPPM',
+      name_loca: 'Lab. Jaringan,LPPM,LPMI',
       loca: {
-        latitude: -7.775558993196828,
-        longitude: 110.45013468846366,
+        latitude: -7.775582485740072,
+        longitude: 110.45009800653193,
       },
       room: {
         lab_komputer: {
-          name: 'Lab. Komputer 3',
+          name: 'Lab. Jaringan',
           prodi: 'Informatika',
           desc: '<p>Laboratorium Jaringan adalah salah satu laboratorium yang di miliki oleh prodi Informatika Fakultas Sains dan Komputer UKRIM. Lab komputer jaringan adalah ruang laboratorium yang khusus dirancang untuk mempelajari dan menguji konsep-konsep serta teknologi yang terkait dengan jaringan komputer. Fungsi utama lab ini adalah sebagai tempat bagi mahasiswa untuk mengembangkan pemahaman praktis tentang desain, konfigurasi, dan pengelolaan jaringan komputer.  Ruangan ini dilengkapi dengan kursi, meja, papan tulis, komputer, AC serta jaringan internet untuk mendukung kegiatan perkuliahan.</p>'
           +
